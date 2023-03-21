@@ -5,7 +5,7 @@ import { sendEmailVerification, signOut } from "firebase/auth";
 import InlineTextButton from "../../components/elements/inlineTextButton";
 import MyTabs from "../../components/navigators/TabNavigator";
 
-export default function Home({ navigation, route }) {
+export default function EmailValidate({ navigation, route }) {
   let logout = () => {
     signOut(auth).then(() => {
       navigation.popToTop();

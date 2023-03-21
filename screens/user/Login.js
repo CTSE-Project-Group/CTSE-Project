@@ -28,7 +28,8 @@ export default function Login({ navigation }) {
     if (email !== "" && password !== "") {
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          navigation.navigate("MyTabs", { user: userCredential });
+          console.log("status", typeof userCredential);
+          navigation.navigate("MyTabs");
         })
         .catch((error) => {
           setErrorMessage(error.message);

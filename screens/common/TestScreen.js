@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import DefaultScreenStyles from "../../styles/DefaultScreenStyles";
 
-const TestScreen = () => {
+const TestScreen = ({ navigation, props }) => {
   return (
     <View style={DefaultScreenStyles.container}>
       <Text>Test Screen</Text>

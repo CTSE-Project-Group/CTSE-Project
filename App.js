@@ -5,8 +5,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUp from "./screens/user/SignUp";
 import ResetPassword from "./screens/user/ResetPassword";
 import ToDo from "./screens/todo/ToDo";
-import Home from "./screens/common/Home";
 import MyTabs from "./components/navigators/TabNavigator";
+import CreateUserName from "./screens/common/CreateUserName";
+import { LogBox } from "react-native";
+
+LogBox.ignoreLogs(["Warning: ..."]);
+LogBox.ignoreAllLogs();
 
 const Stack = createNativeStackNavigator();
 
@@ -35,13 +39,13 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Home"
-          component={Home}
+          name="MyTabs"
+          component={MyTabs}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="MyTabs"
-          component={MyTabs}
+          name="CreateUserName"
+          component={CreateUserName}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
