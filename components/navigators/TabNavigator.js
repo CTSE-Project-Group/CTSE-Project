@@ -1,8 +1,14 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import { Icon } from "@rneui/base";
+// import { Icon } from "@rneui/base";
 import TestScreen from "../../screens/common/TestScreen";
 import MealPlannerHome from "../../screens/mealPlanner/mealPlannerHome";
+import { LogBox } from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
+
+LogBox.ignoreLogs([
+  "Non-serializable values were found in the navigation state",
+]);
 
 const Tab = createBottomTabNavigator();
 
@@ -32,12 +38,14 @@ const MyTabs = () => {
             position: "absolute",
             borderColor: "black",
             fontSize: 10,
-            height: "10%",
+            height: "08%",
             paddingBottom: 8,
             paddingTop: 8,
-            backgroundColor: "#ECECEC",
+            backgroundColor: "#fff",
+            elevation: 0,
+            borderTopWidth: 0,
           },
-          tabBarLabelStyle: { fontSize: 12 },
+          tabBarLabelStyle: { fontSize: 12, display: "none" },
         })}
       >
         <Tab.Screen
@@ -50,20 +58,29 @@ const MyTabs = () => {
           }}
         />
         <Tab.Screen
-          name="Travel"
+          name="Recipies"
           component={TestScreen}
           options={{
             tabBarIcon: ({ focused }) => {
-              return iconSetter("directions-bus", focused);
+              return iconSetter("md-list-sharp", focused);
             },
           }}
         />
         <Tab.Screen
-          name="My Trips"
+          name="Shopping"
           component={TestScreen}
           options={{
             tabBarIcon: ({ focused }) => {
-              return iconSetter("notes", focused);
+              return iconSetter("ios-basket", focused);
+            },
+          }}
+        />
+        <Tab.Screen
+          name="Events"
+          component={TestScreen}
+          options={{
+            tabBarIcon: ({ focused }) => {
+              return iconSetter("calendar", focused);
             },
           }}
         />
@@ -72,7 +89,7 @@ const MyTabs = () => {
           component={TestScreen}
           options={{
             tabBarIcon: ({ focused }) => {
-              return iconSetter("account-circle", focused);
+              return iconSetter("person", focused);
             },
           }}
         />

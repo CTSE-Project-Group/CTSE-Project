@@ -1,9 +1,10 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
+import DefaultScreenStyles from "../../styles/DefaultScreenStyles";
 
 const TestScreen = () => {
   return (
-    <View style={styles.container}>
+    <View style={DefaultScreenStyles.container}>
       <Text>Test Screen</Text>
     </View>
   );
