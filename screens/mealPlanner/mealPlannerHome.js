@@ -1,9 +1,11 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
+import AppStyles from "../../styles/AppStyles";
+import DefaultScreenStyles from "../../styles/DefaultScreenStyles";
 
 const MealPlannerHome = () => {
   return (
-    <View style={styles.container}>
+    <View style={DefaultScreenStyles.container}>
       <Text>Meal planner Home</Text>
     </View>
   );
