@@ -55,7 +55,7 @@ const MyTabs = ({ navigation, props }) => {
       >
         <Tab.Screen
           name="Home"
-          component={AddRecipe}
+          component={MealPlannerHome}
           options={{
             tabBarIcon: ({ focused }) => {
               return iconSetter("home", focused);
