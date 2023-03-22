@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 // import { Icon } from "@rneui/base";
 import TestScreen from "../../screens/common/TestScreen";
 import MealPlannerHome from "../../screens/mealPlanner/mealPlannerHome";
+import AddRecipe from "../../screens/recipe/AddRecipe";
 import { LogBox } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -50,7 +51,7 @@ const MyTabs = () => {
       >
         <Tab.Screen
           name="Home"
-          component={MealPlannerHome}
+          component={AddRecipe}
           options={{
             tabBarIcon: ({ focused }) => {
               return iconSetter("home", focused);

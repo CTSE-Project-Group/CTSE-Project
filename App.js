@@ -6,6 +6,9 @@ import SignUp from "./screens/user/SignUp";
 import ResetPassword from "./screens/user/ResetPassword";
 import ToDo from "./screens/todo/ToDo";
 import Home from "./screens/common/Home";
+import Recipe from "./screens/recipe/Recipe";
+import AddRecipe from "./screens/recipe/AddRecipe";
+import RecipeDetails from "./screens/recipe/RecipeDetails";
 import MyTabs from "./components/navigators/TabNavigator";
 
 const Stack = createNativeStackNavigator();
@@ -44,6 +47,21 @@ export default function App() {
           component={MyTabs}
           options={{ headerShown: false }}
         />
+        {/* <Stack.Screen 
+        name="AddRecipe" 
+        component={AddRecipe} 
+        options={{ title: 'Add recipe' }}
+      /> */}
+      <Stack.Screen 
+        name="Recipe" 
+        component={Recipe} 
+        options={{ title: 'Recipe List' }}
+      />
+      <Stack.Screen 
+        name="RecipeDetails" 
+        component={RecipeDetails} 
+        options={{ title: 'Recipe Details' }}
+      />
       </Stack.Navigator>
     </NavigationContainer>
   );
