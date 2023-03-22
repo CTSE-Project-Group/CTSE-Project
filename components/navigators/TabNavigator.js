@@ -6,6 +6,7 @@ import MealPlannerHome from "../../screens/mealPlanner/mealPlannerHome";
 import { LogBox } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import CreateUserName from "../../screens/common/CreateUserName";
+import MyProfile from "../../screens/myProfile/MyProfile";
 
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
@@ -90,7 +91,7 @@ const MyTabs = ({ navigation, props }) => {
         />
         <Tab.Screen
           name="Account"
-          component={TestScreen}
+          component={MyProfile}
           options={{
             tabBarIcon: ({ focused }) => {
               return iconSetter("person", focused);
