@@ -10,6 +10,11 @@ import Recipe from "./screens/recipe/Recipe";
 import AddRecipe from "./screens/recipe/AddRecipe";
 import RecipeDetails from "./screens/recipe/RecipeDetails";
 import MyTabs from "./components/navigators/TabNavigator";
+import CreateUserName from "./screens/common/CreateUserName";
+import { LogBox } from "react-native";
+
+LogBox.ignoreLogs(["Warning: ..."]);
+LogBox.ignoreAllLogs();
 
 const Stack = createNativeStackNavigator();
 
@@ -38,13 +43,13 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Home"
-          component={Home}
+          name="MyTabs"
+          component={MyTabs}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="MyTabs"
-          component={MyTabs}
+          name="CreateUserName"
+          component={CreateUserName}
           options={{ headerShown: false }}
         />
         {/* <Stack.Screen 

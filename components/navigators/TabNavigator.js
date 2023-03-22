@@ -6,6 +6,7 @@ import MealPlannerHome from "../../screens/mealPlanner/mealPlannerHome";
 import AddRecipe from "../../screens/recipe/AddRecipe";
 import { LogBox } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import CreateUserName from "../../screens/common/CreateUserName";
 
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
@@ -13,7 +14,10 @@ LogBox.ignoreLogs([
 
 const Tab = createBottomTabNavigator();
 
-const MyTabs = () => {
+const MyTabs = ({ navigation, props }) => {
+  const nav = navigation;
+  const pro = props;
+
   const iconSetter = (iconName, focused) => {
     return (
       //used to set icons in the tab bar
