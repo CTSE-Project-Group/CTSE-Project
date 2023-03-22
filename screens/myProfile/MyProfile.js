@@ -3,23 +3,16 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import DefaultScreenStyles from "../../styles/DefaultScreenStyles";
 
-const MyProfile = ({ navigation, props }) => {
+export default function MyProfile({ navigation, props }) {
   return (
     <View style={DefaultScreenStyles.container}>
       <Button>My Recipies</Button>
-      <Button>My Diets</Button>
+      <Button onPress={() => navigation.navigate("MealPLannerStack")}>
+        My Diets
+      </Button>
       <Button>My Shopping lists</Button>
       <Button>Events</Button>
+      {/* link relevant stack screen to buttons */}
     </View>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
-
-export default MyProfile;
+}
