@@ -11,7 +11,9 @@ export default function MyProfile({ navigation, props }) {
         My Diets
       </Button>
       <Button>My Shopping lists</Button>
-      <Button>Events</Button>
+      <Button onPress={() => navigation.navigate("EventManagerStack")}>
+        Events
+      </Button>
       {/* link relevant stack screen to buttons */}
     </View>
   );

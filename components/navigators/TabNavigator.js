@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 // import { Icon } from "@rneui/base";
 import TestScreen from "../../screens/common/TestScreen";
 import MealPlannerHome from "../../screens/mealPlanner/mealPlannerHome";
+import EventManagerHome from "../../screens/eventManager/eventManagerHome";
 import { LogBox } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import CreateUserName from "../../screens/common/CreateUserName";
@@ -82,7 +83,7 @@ const MyTabs = ({ navigation, props }) => {
         />
         <Tab.Screen
           name="Events"
-          component={TestScreen}
+          component={EventManagerHome}
           options={{
             tabBarIcon: ({ focused }) => {
               return iconSetter("calendar", focused);
