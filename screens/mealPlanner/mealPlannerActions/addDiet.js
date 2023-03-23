@@ -1,43 +1,60 @@
 import { Button as Btn } from "@rneui/base";
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { db } from "../../../firebase";
+import { db, auth } from "../../../firebase";
 import { Styles } from "../../../styles/CardStyles";
 import DefaultScreenStyles from "../../../styles/DefaultScreenStyles";
 import { StylesLocal } from "../../../styles/LocalStyles";
-import {
-  Avatar,
-  Button,
-  Card,
-  Title,
-  Paragraph,
-  TextInput,
-  Text,
-  List,
-} from "react-native-paper";
+import { Button, Card, TextInput, Text } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  doc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 
 const AddDietNew = ({ navigation, props }) => {
-  const [userId, setUserID] = useState("");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [instruct, setInstruct] = useState("");
-  const [morning, setBreakfast] = useState(["", ""]);
-  const [lunch, setLunch] = useState(["", ""]);
-  const [dinner, setDinner] = useState(["", ""]);
   const [numberOfTextFields, setNumberOfTextFields] = useState(1);
   const [textFieldsValues, setTextFieldsValues] = useState([
     { field1: "", field2: "" },
   ]);
-  const [breakfastValues, setBreakfastValues] = useState([
-    { field1: "", field2: "" },
-  ]);
-  const [lunchValues, setLunchValues] = useState([{ field1: "", field2: "" }]);
-  const [dinnerValues, setDinnerValues] = useState([
-    { field1: "", field2: "" },
-  ]);
 
-  const renderTextFields = () => {
+  let addDiet = () => {
+    const dbRef = collection(db, "diets");
+    const data = {
+      dietUser: auth.currentUser.uid,
+      dietName: name,
+      dietDesc: desc,
+      dietIns: instruct,
+      dietFoods: textFieldsValues,
+      isShared: false,
+    };
+
+    console.log(data);
+
+    addDoc(dbRef, data)
+      .then((docRef) => {
+        console.log("Document has been added successfully");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const logger = () => {
+    console.log("click", auth.currentUser.uid);
+  };
+
+  const renderTextFields = (id) => {
     const textFields = [];
 
     for (let i = 0; i < numberOfTextFields; i++) {
@@ -49,7 +66,7 @@ const AddDietNew = ({ navigation, props }) => {
             label={insertLabel("Food", StylesLocal.inputLabel)}
             style={StylesLocal.inputFieldDual}
             key={i}
-            placeholder={`Text field ${i}`}
+            placeholder={`insert item`}
             value={textFieldsValues[i].field1}
             onChangeText={(text) => handleTextFieldChange(text, i, "field1")}
           />
@@ -59,11 +76,14 @@ const AddDietNew = ({ navigation, props }) => {
             label={insertLabel("Quantity", StylesLocal.inputLabel)}
             style={StylesLocal.inputFieldDua2}
             key={i + 1}
-            placeholder={`Text field ${i + 1}`}
+            placeholder={`insert qty`}
             value={textFieldsValues[i].field2}
             onChangeText={(text) => handleTextFieldChange(text, i, "field2")}
           />
-          <TouchableOpacity onPress={logger} style={StylesLocal.deleteIconView}>
+          <TouchableOpacity
+            onPress={handleDeleteTextField}
+            style={StylesLocal.deleteIconView}
+          >
             {iconSetter("md-close")}
           </TouchableOpacity>
         </View>
@@ -83,7 +103,7 @@ const AddDietNew = ({ navigation, props }) => {
           {iconSetter("add-circle")}
         </TouchableOpacity>
       </View>
-      {renderTextFields()}
+      {renderTextFields(id)}
     </View>
   );
 
@@ -98,13 +118,16 @@ const AddDietNew = ({ navigation, props }) => {
     setTextFieldsValues(newValues);
   };
 
+  const handleDeleteTextField = (index) => {
+    const newValues = [...textFieldsValues];
+    newValues.splice(index, 1);
+    setTextFieldsValues(newValues);
+    setNumberOfTextFields(numberOfTextFields - 1);
+  };
+
   const insertLabel = (labelValue, style) => (
     <Text style={style}>{labelValue}</Text>
   );
-
-  const logger = () => {
-    console.log("click");
-  };
 
   const iconSetter = (iconName) => {
     return (
@@ -140,7 +163,7 @@ const AddDietNew = ({ navigation, props }) => {
                 value={desc}
                 onChangeText={setDesc}
                 style={StylesLocal.inputField}
-                maxLength={15}
+                maxLength={50}
               />
 
               <TextInput
@@ -151,17 +174,19 @@ const AddDietNew = ({ navigation, props }) => {
                 onChangeText={setInstruct}
                 value={instruct}
                 style={StylesLocal.inputField}
-                maxLength={15}
+                maxLength={50}
               />
             </View>
-            {renderTextViews("Breakfast")}
-            {renderTextViews("Lunch")}
-            <Text>Text field values: {JSON.stringify(textFieldsValues)}</Text>
+            {renderTextViews("Foods")}
           </View>
         </ScrollView>
       </Card.Content>
       <Card.Actions style={Styles.cardActionsStyle}>
-        <Button uppercase={false} style={Styles.buttonProceed}>
+        <Button
+          uppercase={false}
+          style={Styles.buttonProceed}
+          onPress={addDiet}
+        >
           <Text style={Styles.text}> Proceed</Text>
         </Button>
       </Card.Actions>
