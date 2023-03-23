@@ -3,10 +3,10 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import DefaultScreenStyles from "../../../styles/DefaultScreenStyles";
 
-const MyDiets = ({ navigation, props }) => {
+const ViewEvent = ({ navigation, props }) => {
   return (
     <View style={DefaultScreenStyles.container}>
-      <Text>My Diets</Text>
+      <Text>View Event</Text>
     </View>
   );
 };
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyDiets;
+export default ViewEvent;

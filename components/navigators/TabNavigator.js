@@ -1,12 +1,11 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-// import { Icon } from "@rneui/base";
 import TestScreen from "../../screens/common/TestScreen";
 import MealPlannerHome from "../../screens/mealPlanner/mealPlannerHome";
+import EventManagerHome from "../../screens/eventManager/eventManagerHome";
 import { LogBox } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import CreateUserName from "../../screens/common/CreateUserName";
-import MyProfile from "../../screens/myProfile/MyProfile";
+import MyProfileStack from "../../screens/myProfile/MyProfileStack";
 
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
@@ -82,7 +81,7 @@ const MyTabs = ({ navigation, props }) => {
         />
         <Tab.Screen
           name="Events"
-          component={TestScreen}
+          component={EventManagerHome}
           options={{
             tabBarIcon: ({ focused }) => {
               return iconSetter("calendar", focused);
@@ -91,7 +90,7 @@ const MyTabs = ({ navigation, props }) => {
         />
         <Tab.Screen
           name="Account"
-          component={MyProfile}
+          component={MyProfileStack}
           options={{
             tabBarIcon: ({ focused }) => {
               return iconSetter("person", focused);
@@ -100,6 +99,7 @@ const MyTabs = ({ navigation, props }) => {
         />
       </Tab.Navigator>
     </NavigationContainer>
+    // do not make any changes here !!!
   );
 };
 

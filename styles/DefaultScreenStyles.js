@@ -8,4 +8,7 @@ export default StyleSheet.create({
     justifyContent: "center",
     padding: 16,
   },
+  logout: {
+    backgroundColor: "green",
+  },
 });

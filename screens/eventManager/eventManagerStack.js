@@ -1,28 +1,27 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AddDiet from "./mealPlannerActions/addDiet";
-import AddDietNew from "./mealPlannerActions/addDietNew";
-import MyDiets from "./mealPlannerActions/myDiets";
-import ViewDiet from "./mealPlannerActions/viewDiet";
+import AddEvent from "./eventManagerActions/addEvent";
+import MyEvents from "./eventManagerActions/myEvents";
+import ViewEvent from "./eventManagerActions/viewEvent";
 
 const Stack = createNativeStackNavigator();
 
-export default function MealPLannerStack() {
+export default function EventManagerStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="AddDiet"
-        component={AddDietNew}
+        name="AddEvent"
+        component={AddEvent}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="MyDiets"
-        component={MyDiets}
+        name="MyEvents"
+        component={MyEvents}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="ViewDiet"
-        component={ViewDiet}
+        name="ViewEvent"
+        component={ViewEvent}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
