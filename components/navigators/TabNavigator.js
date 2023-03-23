@@ -2,10 +2,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import TestScreen from "../../screens/common/TestScreen";
 import MealPlannerHome from "../../screens/mealPlanner/mealPlannerHome";
-import { LogBox, Keyboard } from "react-native";
+import { LogBox } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import MyProfileStack from "../../screens/myProfile/MyProfileStack";
-import React, { useState, useEffect } from "react";
 
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
@@ -14,24 +13,6 @@ LogBox.ignoreLogs([
 const Tab = createBottomTabNavigator();
 
 const MyTabs = ({ navigation, props }) => {
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => setKeyboardVisible(true)
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => setKeyboardVisible(false)
-    );
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
-
   const nav = navigation;
   const pro = props;
 
