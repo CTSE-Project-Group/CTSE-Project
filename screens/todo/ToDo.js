@@ -5,12 +5,6 @@ import { sendEmailVerification, signOut } from "firebase/auth";
 import InlineTextButton from "../../components/elements/inlineTextButton";
 
 export default function ToDo({ navigation, route }) {
-  let logout = () => {
-    signOut(auth).then(() => {
-      navigation.popToTop();
-    });
-  };
-
   let showContent = () => {};
 
   let showSendVerificationEmail = () => {
