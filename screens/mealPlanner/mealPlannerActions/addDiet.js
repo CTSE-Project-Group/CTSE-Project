@@ -1,12 +1,21 @@
 import { Button } from "@rneui/base";
-import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, Text, TextInput } from "react-native";
+import { db } from "../../../firebase";
 import DefaultScreenStyles from "../../../styles/DefaultScreenStyles";
 
 const AddDiet = ({ navigation, props }) => {
+  const [name, setName] = useState("");
+
   return (
     <View style={DefaultScreenStyles.container}>
       <Text>Add Diets</Text>
+      <TextInput
+        placeholder="Name"
+        placeholderTextColor="#BEBEBE"
+        value={name}
+        onChangeText={setName}
+      />
     </View>
   );
 };

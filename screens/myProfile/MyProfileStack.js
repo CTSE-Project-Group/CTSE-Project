@@ -12,7 +12,11 @@ export default function MyProfileStack() {
   const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer independent={true}>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
         <Stack.Screen name="MyProfile" component={MyProfile} />
         <Stack.Screen name="MealPLannerStack" component={MealPLannerStack} />
         <Stack.Screen name="EventManagerStack" component={EventManagerStack} />

@@ -1,12 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-// import { Icon } from "@rneui/base";
 import TestScreen from "../../screens/common/TestScreen";
 import MealPlannerHome from "../../screens/mealPlanner/mealPlannerHome";
 import EventManagerHome from "../../screens/eventManager/eventManagerHome";
 import { LogBox } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import CreateUserName from "../../screens/common/CreateUserName";
 import MyProfileStack from "../../screens/myProfile/MyProfileStack";
 
 LogBox.ignoreLogs([
