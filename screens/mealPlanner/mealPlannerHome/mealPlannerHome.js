@@ -75,31 +75,32 @@ const MealPlannerHome = ({ navigation, props }) => {
         />
 
         <ScrollView style={Styles.staticTextView}>
-          {diets
-            .filter((diet) =>
-              diet.dietName.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map((diet, i) => (
-              <TouchableOpacity
-                key={i}
-                onPress={() => navigation.navigate("DietView", diet)}
-              >
-                <Card style={styles.card}>
-                  <Card.Content>
-                    <View style={styles.cardTitleRow}>
-                      <Text style={styles.cardDietName}>{diet.dietName}</Text>
-                      <View style={styles.cardAuthorView}>
-                        <Text style={styles.cardDietAuthor}>
-                          {"By " + diet.dietUserName}
-                        </Text>
+          {diets &&
+            diets
+              .filter((diet) =>
+                diet.dietName.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((diet, i) => (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() => navigation.navigate("DietView", diet)}
+                >
+                  <Card style={styles.card}>
+                    <Card.Content>
+                      <View style={styles.cardTitleRow}>
+                        <Text style={styles.cardDietName}>{diet.dietName}</Text>
+                        <View style={styles.cardAuthorView}>
+                          <Text style={styles.cardDietAuthor}>
+                            {"By " + diet.dietUserName}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                    {/* <Text>{diet.dietUser}</Text> */}
-                    <Text>{diet.dietDesc}</Text>
-                  </Card.Content>
-                </Card>
-              </TouchableOpacity>
-            ))}
+                      {/* <Text>{diet.dietUser}</Text> */}
+                      <Text>{diet.dietDesc}</Text>
+                    </Card.Content>
+                  </Card>
+                </TouchableOpacity>
+              ))}
         </ScrollView>
       </Card.Content>
     </Card>

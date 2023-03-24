@@ -119,27 +119,34 @@ const ViewDiet = ({ navigation, route }) => {
               />
             </View>
             <View style={DietStylesLocal.dynamicTextFieldOuterContainer}>
-              {diet.dietFoods.map((food, i) => (
-                <View key={i} style={DietStylesLocal.dynamicTextFieldContainer}>
-                  <TextInput
-                    underlineColor="transparent"
-                    activeUnderlineColor="transparent"
-                    label={insertLabel("Food", DietStylesLocal.inputLabel)}
-                    style={DietStylesLocal.inputFieldDual}
-                    value={food.field1}
-                    editable={isEditable}
-                  />
-                  <TextInput
-                    keyboardType="numeric"
-                    underlineColor="transparent"
-                    activeUnderlineColor="transparent"
-                    label={insertLabel("Quantity", DietStylesLocal.inputLabel)}
-                    style={DietStylesLocal.inputFieldDua2}
-                    value={food.field2}
-                    editable={isEditable}
-                  />
-                </View>
-              ))}
+              {diet.dietFoods &&
+                diet.dietFoods.map((food, i) => (
+                  <View
+                    key={i}
+                    style={DietStylesLocal.dynamicTextFieldContainer}
+                  >
+                    <TextInput
+                      underlineColor="transparent"
+                      activeUnderlineColor="transparent"
+                      label={insertLabel("Food", DietStylesLocal.inputLabel)}
+                      style={DietStylesLocal.inputFieldDual}
+                      value={food.field1}
+                      editable={isEditable}
+                    />
+                    <TextInput
+                      keyboardType="numeric"
+                      underlineColor="transparent"
+                      activeUnderlineColor="transparent"
+                      label={insertLabel(
+                        "Quantity",
+                        DietStylesLocal.inputLabel
+                      )}
+                      style={DietStylesLocal.inputFieldDua2}
+                      value={food.field2}
+                      editable={isEditable}
+                    />
+                  </View>
+                ))}
             </View>
           </View>
         </ScrollView>
