@@ -27,6 +27,7 @@ const AddEventNew = ({ navigation, props }) => {
     const dbRef = collection(db, "events");
     const data = {
       eventUser: auth.currentUser.uid,
+      eventUserName: auth.currentUser.displayName,
       eventName: name,
       eventDesc: desc,
       isShared: false,
