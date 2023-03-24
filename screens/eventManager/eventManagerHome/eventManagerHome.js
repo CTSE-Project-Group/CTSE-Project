@@ -1,17 +1,18 @@
-import { View, StyleSheet, TouchableOpacity, ScrollView, Modal } from "react-native";
+import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Button, Card, TextInput, Text } from "react-native-paper";
-import { auth, db } from "../../firebase";
 import { collection, query, getDocs, getDoc, doc } from "firebase/firestore";
-import React, { useState, useEffect } from "react";
-import { Styles } from "../../styles/CardStyles";
-import { StylesLocal } from "../../styles/LocalStyles";
+import React, { useState, useEffect, useId } from "react";
+import { Styles } from "../../../styles/CardStyles";
+import { StylesLocal } from "../../../styles/LocalStyles";
 import Icon from "react-native-vector-icons/Ionicons";
-import ViewEvent from "./eventManagerActions/viewEvent";
+import { auth, db } from "../../../firebase";
 
 const EventManagerHome = ({ navigation, props }) => {
   const [events, setEvents] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const genID = () => useId();
 
   useEffect(() => {
     if (!mounted) {
@@ -20,16 +21,15 @@ const EventManagerHome = ({ navigation, props }) => {
     }
   }, [events]);
 
-
-
   let getEvents = async () => {
     try {
       const q = query(collection(db, "events"));
       const querySnapshot = await getDocs(q);
       let allEvents = [];
       querySnapshot.forEach((doc) => {
+        const eventId = doc.id;
         let toDo = doc.data();
-        allEvents.push(toDo);
+        allEvents.push({ eventId, ...toDo });
       });
       setEvents(allEvents);
     } catch (e) {
@@ -43,7 +43,6 @@ const EventManagerHome = ({ navigation, props }) => {
     getDoc(docRef)
       .then((doc) => {
         if (doc.exists()) {
-          console.log("Document data:", doc.data());
         } else {
           console.log("No such document!");
         }
@@ -80,9 +79,12 @@ const EventManagerHome = ({ navigation, props }) => {
             .filter((event) =>
               event.eventName.toLowerCase().includes(searchQuery.toLowerCase())
             )
-            .map((event) => (
-              <TouchableOpacity key={event.id}>
-                <Card style={styles.card} key={event.id}>
+            .map((event, i) => (
+              <TouchableOpacity
+                key={i}
+                onPress={() => navigation.navigate("EventView", event)}
+              >
+                <Card style={styles.card}>
                   <Card.Content>
                     <View style={styles.cardTitleRow}>
                       <Text style={styles.cardDietName}>{event.eventName}</Text>
@@ -92,8 +94,7 @@ const EventManagerHome = ({ navigation, props }) => {
                         </Text>
                       </View>
                     </View>
-                    <Text>{event.eventUser}</Text>
-                    <Text>{event.eventDesc}</Text>
+                    {/* <Text>{diet.dietUser}</Text> */}
                   </Card.Content>
                 </Card>
               </TouchableOpacity>

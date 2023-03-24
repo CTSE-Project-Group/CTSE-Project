@@ -10,13 +10,13 @@ export default function EventManagerStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="AddEvent"
-        component={AddEvent}
+        name="MyEvents"
+        component={MyEvents}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="MyEvents"
-        component={MyEvents}
+        name="AddEvent"
+        component={AddEvent}
         options={{ headerShown: false }}
       />
       <Stack.Screen
