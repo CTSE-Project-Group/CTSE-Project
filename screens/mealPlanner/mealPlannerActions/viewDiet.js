@@ -10,6 +10,7 @@ import {
   addDoc,
   query,
   where,
+  deleteDoc,
   updateDoc,
   doc,
   arrayUnion,
@@ -42,6 +43,18 @@ const ViewDiet = ({ navigation, route }) => {
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const deleteDiet = () => {
+    const docRef = doc(db, "diets", diet.dietId);
+    deleteDoc(docRef)
+      .then(() => {
+        console.log("Doc Deleted");
+        updateUser();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const insertLabel = (labelValue, style) => (
@@ -163,7 +176,7 @@ const ViewDiet = ({ navigation, route }) => {
           <Button
             uppercase={false}
             style={DietMainStyles.buttonDelete}
-            onPress={logger}
+            onPress={deleteDiet}
           >
             <Text style={DietMainStyles.text}>Delete</Text>
           </Button>

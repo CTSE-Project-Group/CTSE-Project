@@ -17,9 +17,9 @@ const MyDiets = ({ navigation, props }) => {
 
   useEffect(() => {
     if (!mounted) {
+      setMounted(true);
       getUser();
       getDiets();
-      setMounted(true);
     }
   }, [diets, userDietArr]);
 
