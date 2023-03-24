@@ -9,17 +9,19 @@ import { auth, db } from "../../../firebase";
 import { DietMainStyles } from "../mealPlannerHome/MainStyles";
 
 const MyDiets = ({ navigation, props }) => {
+  const [dietIdArr, setDietIdArr] = useState([]);
+  const [userDietArr, setUserDietArr] = useState([]);
   const [diets, setDiets] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    getUser();
     if (!mounted) {
+      getUser();
       getDiets();
       setMounted(true);
     }
-  }, [diets]);
+  }, [diets, userDietArr]);
 
   const getUser = async () => {
     const docRef = doc(db, "users", auth.currentUser.uid);
@@ -27,6 +29,7 @@ const MyDiets = ({ navigation, props }) => {
 
     if (docSnap.exists) {
       const data = docSnap.data();
+      setUserDietArr(data.myArray);
     } else {
       console.log("No such document!");
     }
@@ -36,31 +39,30 @@ const MyDiets = ({ navigation, props }) => {
     try {
       const q = query(collection(db, "diets"));
       const querySnapshot = await getDocs(q);
+      let allDietIDs = [];
       let allDiets = [];
       querySnapshot.forEach((doc) => {
         const dietId = doc.id;
         let toDo = doc.data();
+        allDietIDs.push(dietId);
         allDiets.push({ dietId, ...toDo });
       });
+      setDietIdArr(allDietIDs);
+
       setDiets(allDiets);
     } catch (e) {
       console.log(e);
     }
   };
 
-  let getUsers = async (id) => {
-    const docRef = doc(db, "users", id);
+  const logger = () => {
+    // console.log(console.log("useree", userDietArr));
+    // console.log(console.log("dietpp", dietIdArr));
+    console.log(filterDietIds(dietIdArr, userDietArr));
+  };
 
-    getDoc(docRef)
-      .then((doc) => {
-        if (doc.exists()) {
-        } else {
-          console.log("No such document!");
-        }
-      })
-      .catch((error) => {
-        console.log("Error getting document:", error);
-      });
+  const filterDietIds = (dietIdArr, userDietArr) => {
+    return dietIdArr.filter((dietId) => userDietArr.includes(dietId));
   };
 
   const iconSetter = (iconName) => {
@@ -92,40 +94,42 @@ const MyDiets = ({ navigation, props }) => {
           underlineColorAndroid="transparent"
           placeholder="Search diets..."
         />
-
         <ScrollView style={Styles.staticTextView}>
-          {diets
-            .filter((diet) =>
-              diet.dietName.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map((diet, i) => (
-              <TouchableOpacity
-                key={i}
-                onPress={() => navigation.navigate("ViewDiet", diet)}
-              >
-                <Card style={styles.card}>
-                  <Card.Content>
-                    <View style={styles.cardTitleRow}>
-                      <Text style={styles.cardDietName}>{diet.dietName}</Text>
-                      <View style={styles.cardAuthorView}>
-                        <Text style={styles.cardDietAuthor}>
-                          {getDietUser(diet.dietUser, diet.dietUserName)}
-                        </Text>
+          {diets &&
+            diets
+              .filter((diet) => userDietArr.includes(diet.dietId))
+              .filter((diet) =>
+                diet.dietName.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((diet, i) => (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() => navigation.navigate("ViewDiet", diet)}
+                >
+                  <Card style={styles.card}>
+                    <Card.Content>
+                      <View style={styles.cardTitleRow}>
+                        <Text style={styles.cardDietName}>{diet.dietName}</Text>
+                        <View style={styles.cardAuthorView}>
+                          <Text style={styles.cardDietAuthor}>
+                            {getDietUser(diet.dietUser, diet.dietUserName)}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                    {/* <Text>{diet.dietUser}</Text> */}
-                    <Text>{diet.dietDesc}</Text>
-                  </Card.Content>
-                </Card>
-              </TouchableOpacity>
-            ))}
+                      {/* <Text>{diet.dietUser}</Text> */}
+                      <Text>{diet.dietDesc}</Text>
+                    </Card.Content>
+                  </Card>
+                </TouchableOpacity>
+              ))}
         </ScrollView>
       </Card.Content>
       <Card.Actions style={DietMainStyles.cardActionsStyle}>
         <Button
           uppercase={false}
           style={DietMainStyles.buttonProceed}
-          onPress={() => navigation.navigate("AddDiet")}
+          onPress={() => navigation.navigate("AddDiet", "Create")}
+          // onPress={logger}
         >
           <Text style={DietMainStyles.text}>Create new Diet</Text>
         </Button>
