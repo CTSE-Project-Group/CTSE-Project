@@ -27,7 +27,6 @@ const MyDiets = ({ navigation, props }) => {
 
     if (docSnap.exists) {
       const data = docSnap.data();
-      console.log(data);
     } else {
       console.log("No such document!");
     }
@@ -55,7 +54,6 @@ const MyDiets = ({ navigation, props }) => {
     getDoc(docRef)
       .then((doc) => {
         if (doc.exists()) {
-          console.log("Document data:", doc.data());
         } else {
           console.log("No such document!");
         }
@@ -70,6 +68,14 @@ const MyDiets = ({ navigation, props }) => {
       //used to set icons in the tab bar
       <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
     );
+  };
+
+  const getDietUser = (id, name) => {
+    if (id == auth.currentUser.uid) {
+      return "My";
+    } else {
+      return `By ${name}`;
+    }
   };
 
   return (
@@ -95,7 +101,7 @@ const MyDiets = ({ navigation, props }) => {
             .map((diet, i) => (
               <TouchableOpacity
                 key={i}
-                onPress={() => navigation.navigate("DietView", diet)}
+                onPress={() => navigation.navigate("ViewDiet", diet)}
               >
                 <Card style={styles.card}>
                   <Card.Content>
@@ -103,7 +109,7 @@ const MyDiets = ({ navigation, props }) => {
                       <Text style={styles.cardDietName}>{diet.dietName}</Text>
                       <View style={styles.cardAuthorView}>
                         <Text style={styles.cardDietAuthor}>
-                          {"By " + diet.dietUserName}
+                          {getDietUser(diet.dietUser, diet.dietUserName)}
                         </Text>
                       </View>
                     </View>

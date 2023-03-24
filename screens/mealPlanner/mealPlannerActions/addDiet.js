@@ -42,8 +42,6 @@ const AddDietNew = ({ navigation, props }) => {
       isShared: false,
     };
 
-    console.log(data);
-
     addDoc(dbRef, data)
       .then((docRef) => {
         console.log("Document has been added successfully");
