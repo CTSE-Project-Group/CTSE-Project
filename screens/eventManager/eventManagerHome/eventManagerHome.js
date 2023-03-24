@@ -6,65 +6,50 @@ import { Styles } from "../../../styles/CardStyles";
 import { StylesLocal } from "../../../styles/LocalStyles";
 import Icon from "react-native-vector-icons/Ionicons";
 import { auth, db } from "../../../firebase";
-import { DietMainStyles } from "../mealPlannerHome/MainStyles";
 
-
-
-const MyDiets = ({ navigation, props }) => {
-  const [dietIdArr, setDietIdArr] = useState([]);
-  const [userDietArr, setUserDietArr] = useState([]);
-  const [diets, setDiets] = useState([]);
+const EventManagerHome = ({ navigation, props }) => {
+  const [events, setEvents] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const genID = () => useId();
+
   useEffect(() => {
     if (!mounted) {
-      getUser();
-      getDiets();
+      getEvents();
       setMounted(true);
     }
-  }, [diets, userDietArr]);
+  }, [events]);
 
-  const getUser = async () => {
-    const docRef = doc(db, "users", auth.currentUser.uid);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists) {
-      const data = docSnap.data();
-      setUserDietArr(data.myArray);
-    } else {
-      console.log("No such document!");
-    }
-  };
-
-  let getDiets = async () => {
+  let getEvents = async () => {
     try {
-      const q = query(collection(db, "diets"));
+      const q = query(collection(db, "events"));
       const querySnapshot = await getDocs(q);
-      let allDietIDs = [];
-      let allDiets = [];
+      let allEvents = [];
       querySnapshot.forEach((doc) => {
-        const dietId = doc.id;
+        const eventId = doc.id;
         let toDo = doc.data();
-        allDietIDs.push(dietId);
-        allDiets.push({ dietId, ...toDo });
+        allEvents.push({ eventId, ...toDo });
       });
-      setDietIdArr(allDietIDs);
-
-      setDiets(allDiets);
+      setEvents(allEvents);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const logger = () => {
-    // console.log(console.log("useree", userDietArr));
-    // console.log(console.log("dietpp", dietIdArr));
-    console.log(filterDietIds(dietIdArr, userDietArr));
-  };
+  let getUsers = async (id) => {
+    const docRef = doc(db, "users", id);
 
-  const filterDietIds = (dietIdArr, userDietArr) => {
-    return dietIdArr.filter((dietId) => userDietArr.includes(dietId));
+    getDoc(docRef)
+      .then((doc) => {
+        if (doc.exists()) {
+        } else {
+          console.log("No such document!");
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting document:", error);
+      });
   };
 
   const iconSetter = (iconName) => {
@@ -74,18 +59,10 @@ const MyDiets = ({ navigation, props }) => {
     );
   };
 
-  const getDietUser = (id, name) => {
-    if (id == auth.currentUser.uid) {
-      return "My";
-    } else {
-      return `By ${name}`;
-    }
-  };
-
   return (
     <Card style={Styles.cardContainer}>
-      <Card.Content style={Styles.cardContent}>
-        <Text style={StylesLocal.cardTitle}>My diets</Text>
+      <Card.Content style={Styles.cardContentWithoutAction}>
+        <Text style={StylesLocal.cardTitle}>Browse events</Text>
         <TextInput
           // label="Search"
           value={searchQuery}
@@ -94,48 +71,36 @@ const MyDiets = ({ navigation, props }) => {
           underlineColor="transparent"
           activeUnderlineColor="transparent"
           underlineColorAndroid="transparent"
-          placeholder="Search diets..."
+          placeholder="Search events..."
         />
+
         <ScrollView style={Styles.staticTextView}>
-          {diets &&
-            diets
-              .filter((diet) => userDietArr.includes(diet.dietId))
-              .filter((diet) =>
-                diet.dietName.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .map((diet, i) => (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() => navigation.navigate("ViewDiet", diet)}
-                >
-                  <Card style={styles.card}>
-                    <Card.Content>
-                      <View style={styles.cardTitleRow}>
-                        <Text style={styles.cardDietName}>{diet.dietName}</Text>
-                        <View style={styles.cardAuthorView}>
-                          <Text style={styles.cardDietAuthor}>
-                            {getDietUser(diet.dietUser, diet.dietUserName)}
-                          </Text>
-                        </View>
+          {events
+            .filter((event) =>
+              event.eventName.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .map((event, i) => (
+              <TouchableOpacity
+                key={i}
+                onPress={() => navigation.navigate("EventView", event)}
+              >
+                <Card style={styles.card}>
+                  <Card.Content>
+                    <View style={styles.cardTitleRow}>
+                      <Text style={styles.cardDietName}>{event.eventName}</Text>
+                      <View style={styles.cardAuthorView}>
+                        <Text style={styles.cardDietAuthor}>
+                          {"By " + event.eventUserName}
+                        </Text>
                       </View>
-                      {/* <Text>{diet.dietUser}</Text> */}
-                      <Text>{diet.dietDesc}</Text>
-                    </Card.Content>
-                  </Card>
-                </TouchableOpacity>
-              ))}
+                    </View>
+                    {/* <Text>{diet.dietUser}</Text> */}
+                  </Card.Content>
+                </Card>
+              </TouchableOpacity>
+            ))}
         </ScrollView>
       </Card.Content>
-      <Card.Actions style={DietMainStyles.cardActionsStyle}>
-        <Button
-          uppercase={false}
-          style={DietMainStyles.buttonProceed}
-          onPress={() => navigation.navigate("AddDiet", "Create")}
-          // onPress={logger}
-        >
-          <Text style={DietMainStyles.text}>Create new Diet</Text>
-        </Button>
-      </Card.Actions>
     </Card>
   );
 };
@@ -220,4 +185,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyDiets;
+export default EventManagerHome;

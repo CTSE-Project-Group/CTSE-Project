@@ -1,5 +1,5 @@
 import { Button as Btn } from "@rneui/base";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { db, auth } from "../../../firebase";
 import { Button, Card, TextInput, Text } from "react-native-paper";
@@ -13,27 +13,31 @@ import {
   updateDoc,
   doc,
   arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import { DietStylesLocal } from "./LocalStyles";
 import { DietMainStyles } from "./MainStyles";
 
 const ViewDiet = ({ navigation, route }) => {
-  const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [instruct, setInstruct] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
-  const [numberOfTextFields, setNumberOfTextFields] = useState(1);
-  const [textFieldsValues, setTextFieldsValues] = useState([
-    { field1: "", field2: "" },
-  ]);
+  const [validUser, setValidUser] = useState("");
+  const [isEditable, setIsEditable] = useState(false);
+  const [isEditClicked, setIsEditClicked] = useState(false);
 
   const diet = route.params;
+
+  useEffect(() => {
+    setValidUser(route.params.dietUser == auth.currentUser.uid);
+    setDesc(diet.dietDesc);
+    setInstruct(diet.dietIns);
+  }, []);
 
   let updateUser = async () => {
     const docRef = doc(db, "users", auth.currentUser.uid);
     try {
       await updateDoc(docRef, {
-        myArray: arrayUnion(diet.dietId),
+        myArray: arrayRemove(diet.dietId),
       });
     } catch (e) {
       console.log(e);
@@ -51,7 +55,19 @@ const ViewDiet = ({ navigation, route }) => {
     );
   };
 
-  const color = { color: "red", fontSize: 19 };
+  const logger = () => {
+    console.log("ee", validUser);
+  };
+
+  const handleEditClicked = () => {
+    setIsEditClicked(true);
+    setIsEditable(true);
+  };
+
+  const handleConfirmClicked = () => {
+    setIsEditClicked(false);
+    setIsEditable(false);
+  };
 
   return (
     <Card style={DietMainStyles.cardContainer}>
@@ -74,21 +90,19 @@ const ViewDiet = ({ navigation, route }) => {
                 label={insertLabel("Description", DietStylesLocal.inputLabel)}
                 placeholder="insert description"
                 value={diet.dietDesc}
-                onChangeText={setDesc}
                 style={DietStylesLocal.inputField}
                 maxLength={50}
-                editable={false}
+                editable={isEditable}
               />
               <TextInput
                 underlineColor="transparent"
                 activeUnderlineColor="transparent"
                 label={insertLabel("Instructions", DietStylesLocal.inputLabel)}
                 placeholder="insert instructions"
-                onChangeText={setInstruct}
                 value={diet.dietIns}
                 style={DietStylesLocal.inputField}
                 multiline={true}
-                editable={false}
+                editable={isEditable}
               />
             </View>
             <View style={DietStylesLocal.dynamicTextFieldOuterContainer}>
@@ -100,7 +114,7 @@ const ViewDiet = ({ navigation, route }) => {
                     label={insertLabel("Food", DietStylesLocal.inputLabel)}
                     style={DietStylesLocal.inputFieldDual}
                     value={food.field1}
-                    editable={false}
+                    editable={isEditable}
                   />
                   <TextInput
                     keyboardType="numeric"
@@ -109,7 +123,7 @@ const ViewDiet = ({ navigation, route }) => {
                     label={insertLabel("Quantity", DietStylesLocal.inputLabel)}
                     style={DietStylesLocal.inputFieldDua2}
                     value={food.field2}
-                    editable={false}
+                    editable={isEditable}
                   />
                 </View>
               ))}
@@ -117,22 +131,44 @@ const ViewDiet = ({ navigation, route }) => {
           </View>
         </ScrollView>
       </Card.Content>
-      <Card.Actions style={DietMainStyles.cardActionsRowStyle}>
-        <Button
-          uppercase={false}
-          style={DietMainStyles.buttonEdit}
-          onPress={updateUser}
-        >
-          <Text style={DietMainStyles.text}>Edit</Text>
-        </Button>
-        <Button
-          uppercase={false}
-          style={DietMainStyles.buttonDelete}
-          onPress={updateUser}
-        >
-          <Text style={DietMainStyles.text}>Delete</Text>
-        </Button>
-      </Card.Actions>
+      {!validUser ? (
+        <Card.Actions style={DietMainStyles.cardActionsStyle}>
+          <Button
+            uppercase={false}
+            style={DietMainStyles.buttonProceed}
+            onPress={updateUser}
+          >
+            <Text style={DietMainStyles.text}>Remove from My diets</Text>
+          </Button>
+        </Card.Actions>
+      ) : isEditClicked ? (
+        <Card.Actions style={DietMainStyles.cardActionsStyle}>
+          <Button
+            uppercase={false}
+            style={DietMainStyles.buttonProceedEdit}
+            onPress={handleConfirmClicked}
+          >
+            <Text style={DietMainStyles.text}>Confirm edits</Text>
+          </Button>
+        </Card.Actions>
+      ) : (
+        <Card.Actions style={DietMainStyles.cardActionsRowStyle}>
+          <Button
+            uppercase={false}
+            style={DietMainStyles.buttonEdit}
+            onPress={() => navigation.navigate("EditDiet", diet.dietId)}
+          >
+            <Text style={DietMainStyles.text}>Edit</Text>
+          </Button>
+          <Button
+            uppercase={false}
+            style={DietMainStyles.buttonDelete}
+            onPress={logger}
+          >
+            <Text style={DietMainStyles.text}>Delete</Text>
+          </Button>
+        </Card.Actions>
+      )}
     </Card>
   );
 };

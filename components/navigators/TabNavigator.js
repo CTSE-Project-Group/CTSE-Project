@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import TestScreen from "../../screens/common/TestScreen";
-import EventManagerHome from "../../screens/eventManager/eventManagerHome";
+import EventManagerHomeStack from "../../screens/eventManager/eventManagerHomeStack";
 import { LogBox } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import MyProfileStack from "../../screens/myProfile/MyProfileStack";
@@ -82,7 +82,7 @@ const MyTabs = ({ navigation, props }) => {
         />
         <Tab.Screen
           name="Events"
-          component={EventManagerHome}
+          component={EventManagerHomeStack}
           options={{
             tabBarIcon: ({ focused }) => {
               return iconSetter("calendar", focused);
