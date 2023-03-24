@@ -7,6 +7,7 @@ import DefaultScreenStyles from "../../../styles/DefaultScreenStyles";
 import { StylesLocal } from "../../../styles/LocalStyles";
 import { Button, Card, TextInput, Text } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
+import AwesomeAlert from "react-native-awesome-alerts";
 import {
   collection,
   addDoc,
@@ -23,6 +24,7 @@ const AddDietNew = ({ navigation, props }) => {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [instruct, setInstruct] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
   const [numberOfTextFields, setNumberOfTextFields] = useState(1);
   const [textFieldsValues, setTextFieldsValues] = useState([
     { field1: "", field2: "" },
@@ -32,6 +34,7 @@ const AddDietNew = ({ navigation, props }) => {
     const dbRef = collection(db, "diets");
     const data = {
       dietUser: auth.currentUser.uid,
+      dietUserName: auth.currentUser.displayName,
       dietName: name,
       dietDesc: desc,
       dietIns: instruct,
@@ -51,7 +54,7 @@ const AddDietNew = ({ navigation, props }) => {
   };
 
   const logger = () => {
-    console.log("click", auth.currentUser.uid);
+    console.log("click", auth.currentUser.displayName);
   };
 
   const renderTextFields = (id) => {
@@ -71,6 +74,7 @@ const AddDietNew = ({ navigation, props }) => {
             onChangeText={(text) => handleTextFieldChange(text, i, "field1")}
           />
           <TextInput
+            keyboardType="numeric"
             underlineColor="transparent"
             activeUnderlineColor="transparent"
             label={insertLabel("Quantity", StylesLocal.inputLabel)}
@@ -107,6 +111,24 @@ const AddDietNew = ({ navigation, props }) => {
     </View>
   );
 
+  const renderAlert = (msg) => (
+    <AwesomeAlert
+      show={showAlert}
+      showProgress={false}
+      title="Cannot proceed"
+      message={msg}
+      closeOnTouchOutside={true}
+      closeOnHardwareBackPress={false}
+      showCancelButton={false}
+      showConfirmButton={true}
+      cancelText="Cancel"
+      confirmText="OK !"
+      confirmButtonColor="#DD6B55"
+      onCancelPressed={() => hideAlert()}
+      onConfirmPressed={() => hideAlert()}
+    />
+  );
+
   const handleAddTextField = () => {
     setNumberOfTextFields(numberOfTextFields + 1);
     setTextFieldsValues([...textFieldsValues, { field1: "", field2: "" }]);
@@ -134,6 +156,30 @@ const AddDietNew = ({ navigation, props }) => {
       //used to set icons in the tab bar
       <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
     );
+  };
+
+  openAlert = () => {
+    if (name == "" || desc == "" || instruct == "") {
+      setShowAlert(true);
+    } else if (!checkAllFieldsNotNull()) {
+      setShowAlert(true);
+    } else {
+      addDiet();
+    }
+  };
+
+  hideAlert = () => {
+    setShowAlert(false);
+  };
+
+  const checkAllFieldsNotNull = () => {
+    for (let i = 0; i < textFieldsValues.length; i++) {
+      const obj = textFieldsValues[i];
+      if (obj.field1 == "" || obj.field2 == "") {
+        return false;
+      }
+    }
+    return true;
   };
 
   return (
@@ -180,12 +226,13 @@ const AddDietNew = ({ navigation, props }) => {
             {renderTextViews("Foods")}
           </View>
         </ScrollView>
+        {renderAlert("Please fill all fields")}
       </Card.Content>
       <Card.Actions style={Styles.cardActionsStyle}>
         <Button
           uppercase={false}
           style={Styles.buttonProceed}
-          onPress={addDiet}
+          onPress={() => openAlert()}
         >
           <Text style={Styles.text}> Proceed</Text>
         </Button>
