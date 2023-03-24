@@ -1,11 +1,11 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import TestScreen from "../../screens/common/TestScreen";
-import MealPlannerHome from "../../screens/mealPlanner/mealPlannerHome";
 import EventManagerHome from "../../screens/eventManager/eventManagerHome";
 import { LogBox } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import MyProfileStack from "../../screens/myProfile/MyProfileStack";
+import MealPLannerHomeStack from "../../screens/mealPlanner/mealPlannerHomeStack";
 
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
@@ -54,7 +54,7 @@ const MyTabs = ({ navigation, props }) => {
       >
         <Tab.Screen
           name="Home"
-          component={MealPlannerHome}
+          component={MealPLannerHomeStack}
           options={{
             tabBarIcon: ({ focused }) => {
               return iconSetter("home", focused);
