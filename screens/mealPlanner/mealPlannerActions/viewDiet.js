@@ -156,7 +156,7 @@ const ViewDiet = ({ navigation, route }) => {
           <Button
             uppercase={false}
             style={DietMainStyles.buttonEdit}
-            onPress={handleEditClicked}
+            onPress={() => navigation.navigate("EditDiet", diet.dietId)}
           >
             <Text style={DietMainStyles.text}>Edit</Text>
           </Button>

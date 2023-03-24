@@ -128,8 +128,8 @@ const MyDiets = ({ navigation, props }) => {
         <Button
           uppercase={false}
           style={DietMainStyles.buttonProceed}
-          // onPress={() => navigation.navigate("AddDiet")}
-          onPress={logger}
+          onPress={() => navigation.navigate("AddDiet", "Create")}
+          // onPress={logger}
         >
           <Text style={DietMainStyles.text}>Create new Diet</Text>
         </Button>
