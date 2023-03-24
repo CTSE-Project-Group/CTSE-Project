@@ -29,10 +29,6 @@ const AddDietNew = ({ navigation, route }) => {
 
   const diet = route.params;
 
-  const logger = () => {
-    console.log("click", diet);
-  };
-
   let updateUser = async () => {
     const docRef = doc(db, "users", auth.currentUser.uid);
     try {
@@ -124,7 +120,7 @@ const AddDietNew = ({ navigation, route }) => {
       <Card.Actions style={DietMainStyles.cardActionsStyle}>
         <Button
           uppercase={false}
-          style={DietMainStyles.buttonProceed}
+          style={DietMainStyles.buttonProceedGreen}
           onPress={updateUser}
         >
           <Text style={DietMainStyles.text}>Add to My diets</Text>
