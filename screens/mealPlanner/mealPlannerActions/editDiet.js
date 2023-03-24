@@ -79,6 +79,52 @@ const EditDietNew = ({ navigation, route }) => {
     console.log(diet);
   };
 
+  const handleAddTextField = () => {
+    setDietArrLen(dietArrLen + 1);
+    setDietArr([...dietArr, { field1: "", field2: "" }]);
+  };
+
+  const handleDeleteTextField = (index) => {
+    const newValues = [...dietArr];
+    newValues.splice(index, 1);
+    setDietArr(newValues);
+    setDietArrLen(dietArrLen - 1);
+  };
+
+  const handleTextFieldChange = (text, index, field) => {
+    const newValues = [...dietArr];
+    newValues[index][field] = text;
+    setDietArr(newValues);
+  };
+
+  const insertLabel = (labelValue, style) => (
+    <Text style={style}>{labelValue}</Text>
+  );
+
+  hideAlert = () => {
+    setShowAlert(false);
+  };
+
+  openAlert = () => {
+    if (name == "" || desc == "" || instruct == "") {
+      setShowAlert(true);
+    } else if (!checkAllFieldsNotNull()) {
+      setShowAlert(true);
+    } else {
+      updateDiet();
+    }
+  };
+
+  const checkAllFieldsNotNull = () => {
+    for (let i = 0; i < dietArr.length; i++) {
+      const obj = dietArr[i];
+      if (obj.field1 == "" || obj.field2 == "") {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const renderTextFields = (id) => {
     const textFields = [];
 
@@ -118,6 +164,13 @@ const EditDietNew = ({ navigation, route }) => {
     return textFields;
   };
 
+  const iconSetter = (iconName) => {
+    return (
+      //used to set icons in the tab bar
+      <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
+    );
+  };
+
   const renderTextViews = (id) => (
     <View id={id} style={StylesLocal.dynamicTextView}>
       <View style={StylesLocal.dynamicTextViewHeader}>
@@ -150,59 +203,6 @@ const EditDietNew = ({ navigation, route }) => {
       onConfirmPressed={() => hideAlert()}
     />
   );
-
-  const handleAddTextField = () => {
-    setDietArrLen(dietArrLen + 1);
-    setDietArr([...dietArr, { field1: "", field2: "" }]);
-  };
-
-  const handleDeleteTextField = (index) => {
-    const newValues = [...dietArr];
-    newValues.splice(index, 1);
-    setDietArr(newValues);
-    setDietArrLen(dietArrLen - 1);
-  };
-
-  const handleTextFieldChange = (text, index, field) => {
-    const newValues = [...dietArr];
-    newValues[index][field] = text;
-    setDietArr(newValues);
-  };
-
-  const insertLabel = (labelValue, style) => (
-    <Text style={style}>{labelValue}</Text>
-  );
-
-  const iconSetter = (iconName) => {
-    return (
-      //used to set icons in the tab bar
-      <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
-    );
-  };
-
-  hideAlert = () => {
-    setShowAlert(false);
-  };
-
-  openAlert = () => {
-    if (name == "" || desc == "" || instruct == "") {
-      setShowAlert(true);
-    } else if (!checkAllFieldsNotNull()) {
-      setShowAlert(true);
-    } else {
-      updateDiet();
-    }
-  };
-
-  const checkAllFieldsNotNull = () => {
-    for (let i = 0; i < dietArr.length; i++) {
-      const obj = dietArr[i];
-      if (obj.field1 == "" || obj.field2 == "") {
-        return false;
-      }
-    }
-    return true;
-  };
 
   return (
     <Card style={Styles.cardContainer}>

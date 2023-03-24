@@ -32,7 +32,6 @@ const AddDietNew = ({ navigation, props }) => {
 
   let addDiet = () => {
     const dbRef = collection(db, "diets");
-    k;
 
     console.log(data);
 
