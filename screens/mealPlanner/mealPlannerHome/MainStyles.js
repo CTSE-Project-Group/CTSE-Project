@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 const defaultColor = "white";
 
-export const Styles = StyleSheet.create({
+export const DietMainStyles = StyleSheet.create({
   cardContainer: {
     paddingTop: "10%",
     height: "92%",
@@ -44,6 +44,17 @@ export const Styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 1,
     backgroundColor: "#C39BD3",
+    borderRadius: 7,
+    borderColor: "white",
+  },
+  buttonProceedGreen: {
+    fontSize: 6,
+    width: "100%",
+    height: "80%",
+    alignSelf: "center",
+    justifyContent: "center",
+    marginBottom: 1,
+    backgroundColor: "#52BE80",
     borderRadius: 7,
     borderColor: "white",
   },

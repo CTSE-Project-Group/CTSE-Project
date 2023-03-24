@@ -27,7 +27,7 @@ const commonDynamicTextViewTitleProps = {
 
 const commonStaticTextViewTitleProps = {
   letterSpacing: 0.5,
-  fontWeight: "regular",
+  fontWeight: "bold",
   fontSize: 20,
   marginBottom: 5,
   left: "2%",
@@ -42,7 +42,7 @@ const commonstaticTextViewProps = {
 
 const commonDynamicTextViewHeaderProps = {};
 
-export const StylesLocal = StyleSheet.create({
+export const DietStylesLocal = StyleSheet.create({
   cardContent: {
     marginTop: 30,
     height: "90%",
@@ -60,11 +60,18 @@ export const StylesLocal = StyleSheet.create({
     ...commonInputFieldProps,
     marginBottom: 5,
     backgroundColor: "#FBEEE6",
+    paddingBottom: 5,
+    fontSize: 18,
+    lineHeight: 21,
+    fontWeight: "regular",
+    letterSpacing: 0.25,
+    color: "white",
+    paddingTop: 5,
   },
   inputFieldDual: {
     ...commonBorderProps,
     ...commonInputFieldProps,
-    width: "40%",
+    width: "49%",
     backgroundColor: "#E8F6F3",
     marginBottom: 5,
     marginRight: 5,
@@ -72,16 +79,20 @@ export const StylesLocal = StyleSheet.create({
   inputFieldDua2: {
     ...commonBorderProps,
     ...commonInputFieldProps,
-    width: "40%",
+    width: "49%",
     backgroundColor: "#E8F6F3",
     marginBottom: 5,
   },
   inputLabel: {
-    fontSize: 15,
+    fontSize: 17,
     color: "black",
   },
   dynamicTextFieldContainer: {
     flexDirection: "row",
+  },
+  dynamicTextFieldOuterContainer: {
+    ...commonstaticTextViewProps,
+    borderColor: "#A2D9CE",
   },
   dynamicTextView: {
     ...commonDynamicTextViewProps,
@@ -103,6 +114,10 @@ export const StylesLocal = StyleSheet.create({
   staticTextViewTitle: {
     ...commonStaticTextViewTitleProps,
     color: "#DC7633",
+  },
+  staticTextViewAuthor: {
+    ...commonStaticTextViewTitleProps,
+    color: "#2E4053",
   },
   deleteIconView: {
     flex: 1,

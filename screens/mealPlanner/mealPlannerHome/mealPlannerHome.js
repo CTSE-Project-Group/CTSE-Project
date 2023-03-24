@@ -6,31 +6,20 @@ import { Styles } from "../../../styles/CardStyles";
 import { StylesLocal } from "../../../styles/LocalStyles";
 import Icon from "react-native-vector-icons/Ionicons";
 import { auth, db } from "../../../firebase";
-import { DietMainStyles } from "../mealPlannerHome/MainStyles";
 
-const MyDiets = ({ navigation, props }) => {
+const MealPlannerHome = ({ navigation, props }) => {
   const [diets, setDiets] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const genID = () => useId();
+
   useEffect(() => {
-    getUser();
     if (!mounted) {
       getDiets();
       setMounted(true);
     }
   }, [diets]);
-
-  const getUser = async () => {
-    const docRef = doc(db, "users", auth.currentUser.uid);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists) {
-      const data = docSnap.data();
-    } else {
-      console.log("No such document!");
-    }
-  };
 
   let getDiets = async () => {
     try {
@@ -70,18 +59,10 @@ const MyDiets = ({ navigation, props }) => {
     );
   };
 
-  const getDietUser = (id, name) => {
-    if (id == auth.currentUser.uid) {
-      return "My";
-    } else {
-      return `By ${name}`;
-    }
-  };
-
   return (
     <Card style={Styles.cardContainer}>
-      <Card.Content style={Styles.cardContent}>
-        <Text style={StylesLocal.cardTitle}>My diets</Text>
+      <Card.Content style={Styles.cardContentWithoutAction}>
+        <Text style={StylesLocal.cardTitle}>Browse diets</Text>
         <TextInput
           // label="Search"
           value={searchQuery}
@@ -101,7 +82,7 @@ const MyDiets = ({ navigation, props }) => {
             .map((diet, i) => (
               <TouchableOpacity
                 key={i}
-                onPress={() => navigation.navigate("ViewDiet", diet)}
+                onPress={() => navigation.navigate("DietView", diet)}
               >
                 <Card style={styles.card}>
                   <Card.Content>
@@ -109,7 +90,7 @@ const MyDiets = ({ navigation, props }) => {
                       <Text style={styles.cardDietName}>{diet.dietName}</Text>
                       <View style={styles.cardAuthorView}>
                         <Text style={styles.cardDietAuthor}>
-                          {getDietUser(diet.dietUser, diet.dietUserName)}
+                          {"By " + diet.dietUserName}
                         </Text>
                       </View>
                     </View>
@@ -121,15 +102,6 @@ const MyDiets = ({ navigation, props }) => {
             ))}
         </ScrollView>
       </Card.Content>
-      <Card.Actions style={DietMainStyles.cardActionsStyle}>
-        <Button
-          uppercase={false}
-          style={DietMainStyles.buttonProceed}
-          onPress={() => navigation.navigate("AddDiet")}
-        >
-          <Text style={DietMainStyles.text}>Create new Diet</Text>
-        </Button>
-      </Card.Actions>
     </Card>
   );
 };
@@ -214,4 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyDiets;
+export default MealPlannerHome;

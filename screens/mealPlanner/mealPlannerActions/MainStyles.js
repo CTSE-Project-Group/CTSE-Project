@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 const defaultColor = "white";
 
-export const Styles = StyleSheet.create({
+export const DietMainStyles = StyleSheet.create({
   cardContainer: {
     paddingTop: "10%",
     height: "92%",
@@ -11,6 +11,13 @@ export const Styles = StyleSheet.create({
     // flex: 6,
     paddingTop: 30,
     height: "90%",
+    backgroundColor: defaultColor,
+    // backgroundColor: "#F90D8A",
+  },
+  cardContentSmall: {
+    // flex: 6,
+    paddingTop: 30,
+    height: "85%",
     backgroundColor: defaultColor,
     // backgroundColor: "#F90D8A",
   },
@@ -27,6 +34,12 @@ export const Styles = StyleSheet.create({
     justifyContent: "center",
     fontSize: 50,
     height: "10%",
+    backgroundColor: defaultColor,
+  },
+  cardActionsRowStyle: {
+    //card action style used for single button,
+    fontSize: 50,
+    height: "20%",
     backgroundColor: defaultColor,
   },
   scrollViewStyle: {
@@ -46,6 +59,28 @@ export const Styles = StyleSheet.create({
     backgroundColor: "#C39BD3",
     borderRadius: 7,
     borderColor: "white",
+  },
+  buttonEdit: {
+    width: "49%",
+    height: "45%",
+    fontSize: 6,
+    alignSelf: "center",
+    justifyContent: "center",
+    marginBottom: 1,
+    borderRadius: 7,
+    borderColor: "white",
+    backgroundColor: "#5499C7",
+  },
+  buttonDelete: {
+    width: "49%",
+    height: "45%",
+    fontSize: 6,
+    alignSelf: "center",
+    justifyContent: "center",
+    marginBottom: 1,
+    borderRadius: 7,
+    borderColor: "white",
+    backgroundColor: "#E74C3C",
   },
   text: {
     fontSize: 18,

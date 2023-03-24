@@ -17,7 +17,7 @@ import {
 import { DietStylesLocal } from "./LocalStyles";
 import { DietMainStyles } from "./MainStyles";
 
-const ViewDiet = ({ navigation, route }) => {
+const AddDietNew = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [instruct, setInstruct] = useState("");
@@ -55,8 +55,8 @@ const ViewDiet = ({ navigation, route }) => {
 
   return (
     <Card style={DietMainStyles.cardContainer}>
-      <Card.Content style={DietMainStyles.cardContentSmall}>
-        <Text style={DietStylesLocal.cardTitle}>My diet info</Text>
+      <Card.Content style={DietMainStyles.cardContent}>
+        <Text style={DietStylesLocal.cardTitle}>Diet info</Text>
         <ScrollView style={DietMainStyles.scrollViewBasicStyle}>
           <View>
             <View style={DietStylesLocal.staticTextView}>
@@ -117,24 +117,17 @@ const ViewDiet = ({ navigation, route }) => {
           </View>
         </ScrollView>
       </Card.Content>
-      <Card.Actions style={DietMainStyles.cardActionsRowStyle}>
+      <Card.Actions style={DietMainStyles.cardActionsStyle}>
         <Button
           uppercase={false}
-          style={DietMainStyles.buttonEdit}
+          style={DietMainStyles.buttonProceedGreen}
           onPress={updateUser}
         >
-          <Text style={DietMainStyles.text}>Edit</Text>
-        </Button>
-        <Button
-          uppercase={false}
-          style={DietMainStyles.buttonDelete}
-          onPress={updateUser}
-        >
-          <Text style={DietMainStyles.text}>Delete</Text>
+          <Text style={DietMainStyles.text}>Add to My diets</Text>
         </Button>
       </Card.Actions>
     </Card>
   );
 };
 
-export default ViewDiet;
+export default AddDietNew;
