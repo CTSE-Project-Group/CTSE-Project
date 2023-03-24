@@ -49,11 +49,11 @@ export const StylesLocal = StyleSheet.create({
     backgroundColor: "#E0E1DF",
   },
   cardTitle: {
-    color: "black",
+    color: "#1A5276",
     fontSize: 25,
     // textAlign: "center",
     marginBottom: 20,
-    left: "5%",
+    left: "3%",
   },
   inputField: {
     ...commonBorderProps,
@@ -110,7 +110,7 @@ export const StylesLocal = StyleSheet.create({
     alignItems: "center",
   },
   addIconView: {
-    right: -93,
+    right: -110,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

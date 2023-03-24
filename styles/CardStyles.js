@@ -14,6 +14,13 @@ export const Styles = StyleSheet.create({
     backgroundColor: defaultColor,
     // backgroundColor: "#F90D8A",
   },
+  cardContentWithoutAction: {
+    // flex: 6,
+    paddingTop: 30,
+    height: "100%",
+    backgroundColor: defaultColor,
+    // backgroundColor: "#F90D8A",
+  },
   cardActionsStyle: {
     //card action style used for single button
     alignItems: "center",
@@ -36,7 +43,7 @@ export const Styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     marginBottom: 1,
-    backgroundColor: "#95BD2A",
+    backgroundColor: "#C39BD3",
     borderRadius: 7,
     borderColor: "white",
   },
