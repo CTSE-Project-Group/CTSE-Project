@@ -24,16 +24,12 @@ import {
 const EditDietNew = ({ navigation, route }) => {
   const [dietID, setDietId] = useState("");
   const [dietArrLen, setDietArrLen] = useState(0);
-  const [dietArr, setDietArr] = useState([]);
+  const [dietArr, setDietArr] = useState([{ field1: "", field2: "" }]);
   const [diet, setDiet] = useState();
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [instruct, setInstruct] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [numberOfTextFields, setNumberOfTextFields] = useState(1);
-  const [textFieldsValues, setTextFieldsValues] = useState([
-    { field1: "", field2: "" },
-  ]);
 
   useEffect(() => {
     getDiet();
@@ -53,27 +49,26 @@ const EditDietNew = ({ navigation, route }) => {
       setInstruct(data.dietIns);
       setDietArrLen(data.dietFoods.length);
       setDietArr(data.dietFoods);
-      console.log(data.dietFoods.length);
     } else {
       console.log("No such document!");
     }
   };
 
-  let addDiet = () => {
-    const dbRef = collection(db, "diets");
+  let updateDiet = () => {
     const data = {
-      dietUser: auth.currentUser.uid,
-      dietUserName: auth.currentUser.displayName,
+      dietUser: diet.dietUser,
+      dietUserName: diet.dietUserName,
       dietName: name,
       dietDesc: desc,
       dietIns: instruct,
-      dietFoods: textFieldsValues,
+      dietFoods: dietArr,
       isShared: false,
     };
 
-    addDoc(dbRef, data)
-      .then((docRef) => {
-        console.log("Document has been added successfully");
+    const docRef = doc(db, "diets", route.params);
+    setDoc(docRef, data)
+      .then(() => {
+        console.log("Doc Updated");
       })
       .catch((error) => {
         console.log(error);
@@ -157,21 +152,21 @@ const EditDietNew = ({ navigation, route }) => {
   );
 
   const handleAddTextField = () => {
-    setNumberOfTextFields(numberOfTextFields + 1);
-    setTextFieldsValues([...textFieldsValues, { field1: "", field2: "" }]);
+    setDietArrLen(dietArrLen + 1);
+    setDietArr([...dietArr, { field1: "", field2: "" }]);
+  };
+
+  const handleDeleteTextField = (index) => {
+    const newValues = [...dietArr];
+    newValues.splice(index, 1);
+    setDietArr(newValues);
+    setDietArrLen(dietArrLen - 1);
   };
 
   const handleTextFieldChange = (text, index, field) => {
     const newValues = [...dietArr];
     newValues[index][field] = text;
     setDietArr(newValues);
-  };
-
-  const handleDeleteTextField = (index) => {
-    const newValues = [...textFieldsValues];
-    newValues.splice(index, 1);
-    setTextFieldsValues(newValues);
-    setNumberOfTextFields(numberOfTextFields - 1);
   };
 
   const insertLabel = (labelValue, style) => (
@@ -185,23 +180,23 @@ const EditDietNew = ({ navigation, route }) => {
     );
   };
 
+  hideAlert = () => {
+    setShowAlert(false);
+  };
+
   openAlert = () => {
     if (name == "" || desc == "" || instruct == "") {
       setShowAlert(true);
     } else if (!checkAllFieldsNotNull()) {
       setShowAlert(true);
     } else {
-      addDiet();
+      updateDiet();
     }
   };
 
-  hideAlert = () => {
-    setShowAlert(false);
-  };
-
   const checkAllFieldsNotNull = () => {
-    for (let i = 0; i < textFieldsValues.length; i++) {
-      const obj = textFieldsValues[i];
+    for (let i = 0; i < dietArr.length; i++) {
+      const obj = dietArr[i];
       if (obj.field1 == "" || obj.field2 == "") {
         return false;
       }
@@ -261,7 +256,7 @@ const EditDietNew = ({ navigation, route }) => {
         <Button
           uppercase={false}
           style={Styles.buttonProceedConfirm}
-          onPress={getDiet}
+          onPress={() => openAlert()}
         >
           <Text style={Styles.text}> Confirm Edit</Text>
         </Button>
