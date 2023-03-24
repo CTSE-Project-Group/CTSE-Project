@@ -7,7 +7,6 @@ import DefaultScreenStyles from "../../../styles/DefaultScreenStyles";
 import { StylesLocal } from "../../../styles/LocalStyles";
 import { Button, Card, TextInput, Text } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
-import AwesomeAlert from "react-native-awesome-alerts";
 import {
   collection,
   addDoc,
@@ -20,27 +19,27 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-const AddDietNew = ({ navigation, props }) => {
+const AddRecipeNew = ({ navigation, props }) => {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
-  const [instruct, setInstruct] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
+  const [price, setPrice] = useState("");
   const [numberOfTextFields, setNumberOfTextFields] = useState(1);
   const [textFieldsValues, setTextFieldsValues] = useState([
     { field1: "", field2: "" },
   ]);
 
-  let addDiet = () => {
-    const dbRef = collection(db, "diets");
+  let addRecipe = () => {
+    const dbRef = collection(db, "recipe");
     const data = {
-      dietUser: auth.currentUser.uid,
-      dietUserName: auth.currentUser.displayName,
-      dietName: name,
-      dietDesc: desc,
-      dietIns: instruct,
+      recipeUser: auth.currentUser.uid,
+      recipeName: name,
+      recipeDesc: desc,
+      recipePrice: price,
       dietFoods: textFieldsValues,
       isShared: false,
     };
+
+    console.log(data);
 
     addDoc(dbRef, data)
       .then((docRef) => {
@@ -52,7 +51,7 @@ const AddDietNew = ({ navigation, props }) => {
   };
 
   const logger = () => {
-    console.log("click", auth.currentUser.displayName);
+    console.log("click", auth.currentUser.uid);
   };
 
   const renderTextFields = (id) => {
@@ -64,7 +63,7 @@ const AddDietNew = ({ navigation, props }) => {
           <TextInput
             underlineColor="transparent"
             activeUnderlineColor="transparent"
-            label={insertLabel("Food", StylesLocal.inputLabel)}
+            label={insertLabel("Ingredients", StylesLocal.inputLabel)}
             style={StylesLocal.inputFieldDual}
             key={i}
             placeholder={`insert item`}
@@ -72,10 +71,9 @@ const AddDietNew = ({ navigation, props }) => {
             onChangeText={(text) => handleTextFieldChange(text, i, "field1")}
           />
           <TextInput
-            keyboardType="numeric"
             underlineColor="transparent"
             activeUnderlineColor="transparent"
-            label={insertLabel("Quantity", StylesLocal.inputLabel)}
+            label={insertLabel("Quantity(grams)", StylesLocal.inputLabel)}
             style={StylesLocal.inputFieldDua2}
             key={i + 1}
             placeholder={`insert qty`}
@@ -109,24 +107,6 @@ const AddDietNew = ({ navigation, props }) => {
     </View>
   );
 
-  const renderAlert = (msg) => (
-    <AwesomeAlert
-      show={showAlert}
-      showProgress={false}
-      title="Cannot proceed"
-      message={msg}
-      closeOnTouchOutside={true}
-      closeOnHardwareBackPress={false}
-      showCancelButton={false}
-      showConfirmButton={true}
-      cancelText="Cancel"
-      confirmText="OK !"
-      confirmButtonColor="#DD6B55"
-      onCancelPressed={() => hideAlert()}
-      onConfirmPressed={() => hideAlert()}
-    />
-  );
-
   const handleAddTextField = () => {
     setNumberOfTextFields(numberOfTextFields + 1);
     setTextFieldsValues([...textFieldsValues, { field1: "", field2: "" }]);
@@ -156,44 +136,20 @@ const AddDietNew = ({ navigation, props }) => {
     );
   };
 
-  openAlert = () => {
-    if (name == "" || desc == "" || instruct == "") {
-      setShowAlert(true);
-    } else if (!checkAllFieldsNotNull()) {
-      setShowAlert(true);
-    } else {
-      addDiet();
-    }
-  };
-
-  hideAlert = () => {
-    setShowAlert(false);
-  };
-
-  const checkAllFieldsNotNull = () => {
-    for (let i = 0; i < textFieldsValues.length; i++) {
-      const obj = textFieldsValues[i];
-      if (obj.field1 == "" || obj.field2 == "") {
-        return false;
-      }
-    }
-    return true;
-  };
-
   return (
     <Card style={Styles.cardContainer}>
       {/* <Card.Title style={Styles.cardTitleStyle}>EEEE</Card.Title> */}
       <Card.Content style={Styles.cardContent}>
-        <Text style={StylesLocal.cardTitle}>Create diet plan</Text>
+        <Text style={StylesLocal.cardTitle}>Add Recipe Details</Text>
         <ScrollView style={Styles.scrollViewBasicStyle}>
           <View>
             <View style={StylesLocal.staticTextView}>
-              <Text style={StylesLocal.staticTextViewTitle}>Diet info</Text>
+              <Text style={StylesLocal.staticTextViewTitle}>Recipe info</Text>
               <TextInput
                 underlineColor="transparent"
                 activeUnderlineColor="transparent"
-                label={insertLabel("Diet name", StylesLocal.inputLabel)}
-                placeholder="insert diet name"
+                label={insertLabel("Recipe name", StylesLocal.inputLabel)}
+                placeholder="insert recipe name"
                 value={name}
                 onChangeText={setName}
                 style={StylesLocal.inputField}
@@ -207,32 +163,29 @@ const AddDietNew = ({ navigation, props }) => {
                 value={desc}
                 onChangeText={setDesc}
                 style={StylesLocal.inputField}
-                maxLength={100}
-                multiline={true}
+                maxLength={50}
               />
 
               <TextInput
                 underlineColor="transparent"
                 activeUnderlineColor="transparent"
-                label={insertLabel("Instructions", StylesLocal.inputLabel)}
-                placeholder="insert instructions"
-                onChangeText={setInstruct}
-                value={instruct}
+                label={insertLabel("Price", StylesLocal.inputLabel)}
+                placeholder="insert price"
+                onChangeText={setPrice}
+                value={price}
                 style={StylesLocal.inputField}
-                maxLength={100}
-                multiline={true}
+                maxLength={50}
               />
             </View>
-            {renderTextViews("Foods")}
+            {renderTextViews("Ingredients")}
           </View>
         </ScrollView>
-        {renderAlert("Please fill all fields")}
       </Card.Content>
       <Card.Actions style={Styles.cardActionsStyle}>
         <Button
           uppercase={false}
           style={Styles.buttonProceed}
-          onPress={() => openAlert()}
+          onPress={addRecipe}
         >
           <Text style={Styles.text}> Proceed</Text>
         </Button>
@@ -241,4 +194,4 @@ const AddDietNew = ({ navigation, props }) => {
   );
 };
 
-export default AddDietNew;
+export default AddRecipeNew;

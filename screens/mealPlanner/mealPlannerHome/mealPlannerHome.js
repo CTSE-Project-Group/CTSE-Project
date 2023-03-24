@@ -1,16 +1,18 @@
 import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Button, Card, TextInput, Text } from "react-native-paper";
-import { auth, db } from "../../firebase";
 import { collection, query, getDocs, getDoc, doc } from "firebase/firestore";
-import React, { useState, useEffect } from "react";
-import { Styles } from "../../styles/CardStyles";
-import { StylesLocal } from "../../styles/LocalStyles";
+import React, { useState, useEffect, useId } from "react";
+import { Styles } from "../../../styles/CardStyles";
+import { StylesLocal } from "../../../styles/LocalStyles";
 import Icon from "react-native-vector-icons/Ionicons";
+import { auth, db } from "../../../firebase";
 
 const MealPlannerHome = ({ navigation, props }) => {
   const [diets, setDiets] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const genID = () => useId();
 
   useEffect(() => {
     if (!mounted) {
@@ -25,8 +27,9 @@ const MealPlannerHome = ({ navigation, props }) => {
       const querySnapshot = await getDocs(q);
       let allDiets = [];
       querySnapshot.forEach((doc) => {
+        const dietId = doc.id;
         let toDo = doc.data();
-        allDiets.push(toDo);
+        allDiets.push({ dietId, ...toDo });
       });
       setDiets(allDiets);
     } catch (e) {
@@ -40,7 +43,6 @@ const MealPlannerHome = ({ navigation, props }) => {
     getDoc(docRef)
       .then((doc) => {
         if (doc.exists()) {
-          console.log("Document data:", doc.data());
         } else {
           console.log("No such document!");
         }
@@ -77,9 +79,12 @@ const MealPlannerHome = ({ navigation, props }) => {
             .filter((diet) =>
               diet.dietName.toLowerCase().includes(searchQuery.toLowerCase())
             )
-            .map((diet) => (
-              <TouchableOpacity key={diet.id}>
-                <Card style={styles.card} key={diet.id}>
+            .map((diet, i) => (
+              <TouchableOpacity
+                key={i}
+                onPress={() => navigation.navigate("DietView", diet)}
+              >
+                <Card style={styles.card}>
                   <Card.Content>
                     <View style={styles.cardTitleRow}>
                       <Text style={styles.cardDietName}>{diet.dietName}</Text>
@@ -89,7 +94,7 @@ const MealPlannerHome = ({ navigation, props }) => {
                         </Text>
                       </View>
                     </View>
-                    <Text>{diet.dietUser}</Text>
+                    {/* <Text>{diet.dietUser}</Text> */}
                     <Text>{diet.dietDesc}</Text>
                   </Card.Content>
                 </Card>

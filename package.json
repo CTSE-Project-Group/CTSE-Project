@@ -18,12 +18,14 @@
     "expo": "~48.0.6",
     "expo-status-bar": "~1.4.4",
     "firebase": "^9.18.0",
+    "global": "^4.4.0",
     "react": "18.2.0",
     "react-native": "0.71.3",
     "react-native-awesome-alerts": "^2.0.0",
     "react-native-elements": "^3.4.3",
     "react-native-paper": "^5.5.0",
-    "react-native-vector-icons": "^9.2.0"
+    "react-native-vector-icons": "^9.2.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
