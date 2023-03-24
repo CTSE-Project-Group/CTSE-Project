@@ -47,6 +47,17 @@ export const DietMainStyles = StyleSheet.create({
     borderRadius: 7,
     borderColor: "white",
   },
+  buttonProceedGreen: {
+    fontSize: 6,
+    width: "100%",
+    height: "80%",
+    alignSelf: "center",
+    justifyContent: "center",
+    marginBottom: 1,
+    backgroundColor: "#52BE80",
+    borderRadius: 7,
+    borderColor: "white",
+  },
   text: {
     fontSize: 18,
     lineHeight: 21,
