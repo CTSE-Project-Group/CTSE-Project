@@ -186,7 +186,7 @@ const AddDietNew = ({ navigation, props }) => {
     <Card style={Styles.cardContainer}>
       {/* <Card.Title style={Styles.cardTitleStyle}>EEEE</Card.Title> */}
       <Card.Content style={Styles.cardContent}>
-        <Text style={StylesLocal.cardTitle}>Add Pickup Details</Text>
+        <Text style={StylesLocal.cardTitle}>Create diet plan</Text>
         <ScrollView style={Styles.scrollViewBasicStyle}>
           <View>
             <View style={StylesLocal.staticTextView}>
@@ -209,7 +209,8 @@ const AddDietNew = ({ navigation, props }) => {
                 value={desc}
                 onChangeText={setDesc}
                 style={StylesLocal.inputField}
-                maxLength={50}
+                maxLength={100}
+                multiline={true}
               />
 
               <TextInput
@@ -220,7 +221,8 @@ const AddDietNew = ({ navigation, props }) => {
                 onChangeText={setInstruct}
                 value={instruct}
                 style={StylesLocal.inputField}
-                maxLength={50}
+                maxLength={100}
+                multiline={true}
               />
             </View>
             {renderTextViews("Foods")}
