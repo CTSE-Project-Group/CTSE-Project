@@ -17,7 +17,7 @@ import {
 import { RecipeStylesLocal } from "./LocalStyles";
 import { RecipeMainStyles } from "./MainStyles";
 
-const ViewRecipe = ({ navigation, route }) => {
+const AddrecipeNew = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState("");
@@ -54,9 +54,9 @@ const ViewRecipe = ({ navigation, route }) => {
   const color = { color: "red", fontSize: 19 };
 
   return (
-    <Card style={RecipeMainStyles.cardContainer}>
-      <Card.Content style={RecipeMainStyles.cardContentSmall}>
-        <Text style={RecipeStylesLocal.cardTitle}>My recipe info</Text>
+    <Card style={RecipeMainStyles.cardActionsStyle}>
+      <Card.Content style={RecipeMainStyles.cardContent}>
+        <Text style={RecipeStylesLocal.cardTitle}>Recipe info</Text>
         <ScrollView style={RecipeMainStyles.scrollViewBasicStyle}>
           <View>
             <View style={RecipeStylesLocal.staticTextView}>
@@ -106,7 +106,7 @@ const ViewRecipe = ({ navigation, route }) => {
                     keyboardType="numeric"
                     underlineColor="transparent"
                     activeUnderlineColor="transparent"
-                    label={insertLabel("Quantity(grams)", RecipeStylesLocal.inputLabel)}
+                    label={insertLabel("Quantity", RecipeStylesLocal.inputLabel)}
                     style={RecipeStylesLocal.inputFieldDua2}
                     value={Ingredients.field2}
                     editable={false}
@@ -117,24 +117,17 @@ const ViewRecipe = ({ navigation, route }) => {
           </View>
         </ScrollView>
       </Card.Content>
-      <Card.Actions style={RecipeMainStyles.cardActionsRowStyle}>
+      <Card.Actions style={RecipeMainStyles.cardActionsStyle}>
         <Button
           uppercase={false}
-          style={RecipeMainStyles.buttonEdit}
+          style={RecipeMainStyles.buttonProceedGreen}
           onPress={updateUser}
         >
-          <Text style={RecipeMainStyles.text}>Edit</Text>
-        </Button>
-        <Button
-          uppercase={false}
-          style={RecipeMainStyles.buttonDelete}
-          onPress={updateUser}
-        >
-          <Text style={RecipeMainStyles.text}>Delete</Text>
+          <Text style={RecipeMainStyles.text}>Add to My recipes</Text>
         </Button>
       </Card.Actions>
     </Card>
   );
 };
 
-export default ViewRecipe;
+export default AddrecipeNew;

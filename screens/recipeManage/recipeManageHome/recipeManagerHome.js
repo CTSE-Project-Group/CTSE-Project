@@ -6,31 +6,20 @@ import { Styles } from "../../../styles/CardStyles";
 import { StylesLocal } from "../../../styles/LocalStyles";
 import Icon from "react-native-vector-icons/Ionicons";
 import { auth, db } from "../../../firebase";
-import { RecipeMainStyles } from "../recipeManageHome/MainStyles";
 
-const MyRecipe = ({ navigation, props }) => {
+const RecipeManagerHome = ({ navigation, props }) => {
   const [recipe, setRecipe] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const genID = () => useId();
+
   useEffect(() => {
-    getUser();
     if (!mounted) {
       getRecipe();
       setMounted(true);
     }
   }, [recipe]);
-
-  const getUser = async () => {
-    const docRef = doc(db, "users", auth.currentUser.uid);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists) {
-      const data = docSnap.data();
-    } else {
-      console.log("No such document!");
-    }
-  };
 
   let getRecipe = async () => {
     try {
@@ -70,18 +59,10 @@ const MyRecipe = ({ navigation, props }) => {
     );
   };
 
-  const getRecipeUser = (id, name) => {
-    if (id == auth.currentUser.uid) {
-      return "My";
-    } else {
-      return `By ${name}`;
-    }
-  };
-
   return (
     <Card style={Styles.cardContainer}>
-      <Card.Content style={Styles.cardContent}>
-        <Text style={StylesLocal.cardTitle}>My Recipe</Text>
+      <Card.Content style={Styles.cardContentWithoutAction}>
+        <Text style={StylesLocal.cardTitle}>Browse recipe</Text>
         <TextInput
           // label="Search"
           value={searchQuery}
@@ -101,7 +82,7 @@ const MyRecipe = ({ navigation, props }) => {
             .map((recipe, i) => (
               <TouchableOpacity
                 key={i}
-                onPress={() => navigation.navigate("ViewRecipe", recipe)}
+                onPress={() => navigation.navigate("RecipeView", recipe)}
               >
                 <Card style={styles.card}>
                   <Card.Content>
@@ -109,7 +90,7 @@ const MyRecipe = ({ navigation, props }) => {
                       <Text style={styles.cardRecipeName}>{recipe.recipeName}</Text>
                       <View style={styles.cardAuthorView}>
                         <Text style={styles.cardRecipeAuthor}>
-                          {getRecipeUser(recipe.recipeUser, recipe.recipeUserName)}
+                          {"By " + recipe.recipeUserName}
                         </Text>
                       </View>
                     </View>
@@ -121,15 +102,6 @@ const MyRecipe = ({ navigation, props }) => {
             ))}
         </ScrollView>
       </Card.Content>
-      <Card.Actions Style={StyleSheet.create.cardAction12}>
-        <Button
-          uppercase={false}
-          style={StyleSheet.create.buttonProceed}
-          onPress={() => navigation.navigate("AddRecipe")}
-        >
-          <Text style={StyleSheet.create.text1}>Create new Recipe</Text>
-        </Button>
-      </Card.Actions>
     </Card>
   );
 };
@@ -212,32 +184,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     backgroundColor: "#EAF2F8",
   },
-  cardAction12: {
-    //card action style used for single button
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 50,
-    height: "10%",
-    backgroundColor: "white",
-  },
-  buttonProceed: {
-    fontSize: 6,
-    width: "100%",
-    height: "80%",
-    alignSelf: "center",
-    justifyContent: "center",
-    marginBottom: 1,
-    backgroundColor: "#C39BD3",
-    borderRadius: 7,
-    borderColor: "white",
-  },
-  text1: {
-    fontSize: 18,
-    lineHeight: 21,
-    fontWeight: "bold",
-    letterSpacing: 0.25,
-    color: "white",
-  },
 });
 
-export default MyRecipe;
+export default RecipeManagerHome;

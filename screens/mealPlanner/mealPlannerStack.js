@@ -2,7 +2,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AddDiet from "./mealPlannerActions/addDiet";
 import MyDiets from "./mealPlannerActions/myDiets";
-
 import ViewDiet from "./mealPlannerActions/viewDiet";
 
 const Stack = createNativeStackNavigator();
