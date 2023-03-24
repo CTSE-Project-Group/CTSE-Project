@@ -33,7 +33,7 @@ export const DietMainStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     fontSize: 50,
-    height: "10%",
+    height: "20%",
     backgroundColor: defaultColor,
   },
   cardActionsRowStyle: {
@@ -52,11 +52,11 @@ export const DietMainStyles = StyleSheet.create({
   buttonProceed: {
     fontSize: 6,
     width: "100%",
-    height: "80%",
+    height: "37%",
     alignSelf: "center",
     justifyContent: "center",
     marginBottom: 1,
-    backgroundColor: "#C39BD3",
+    backgroundColor: "#E74C3C",
     borderRadius: 7,
     borderColor: "white",
   },
