@@ -15,7 +15,7 @@ import {
 } from "firebase/firestore";
 import DefaultScreenStyles from "../../styles/DefaultScreenStyles";
 
-export default function MyProfile({ navigation, props }) {
+function MyProfile({ navigation, props }) {
   let getUser = async () => {
     try {
       const q = query(collection(db, "diets"));
@@ -83,7 +83,7 @@ export default function MyProfile({ navigation, props }) {
     <View style={DefaultScreenStyles.container}>
       <Button onPress={() => navigation.navigate("RecipeManageStack")}>
         My Recipies
-        </Button>
+      </Button>
       <Button onPress={() => navigation.navigate("MealPLannerStack")}>
         My Diets
       </Button>
@@ -95,6 +95,35 @@ export default function MyProfile({ navigation, props }) {
         Logout
       </Button>
       {/* link relevant stack screen to buttons */}
+      <Button
+        uppercase={false}
+        style={Styles.buttonProceed}
+        onPress={updateUser}
+      >
+        <Text style={Styles.text}>Remove from My diets</Text>
+      </Button>
     </View>
   );
 }
+const Styles = StyleSheet.create({
+  text: {
+    fontSize: 18,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "white",
+  },
+  buttonProceed: {
+    fontSize: 6,
+    width: "100%",
+    height: "45%",
+    alignSelf: "center",
+    justifyContent: "center",
+    marginBottom: 1,
+    backgroundColor: "#E74C3C",
+    borderRadius: 7,
+    borderColor: "white",
+  },
+});
+
+export default MyProfile;

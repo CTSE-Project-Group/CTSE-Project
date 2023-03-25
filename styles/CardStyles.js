@@ -65,4 +65,13 @@ export const Styles = StyleSheet.create({
     letterSpacing: 0.25,
     color: "white",
   },
+  nullText: {
+    alignSelf: "center",
+    marginTop: 50,
+    fontSize: 18,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "#E74C3C",
+  },
 });
