@@ -95,8 +95,6 @@ const EventManagerHome = ({ navigation, props }) => {
                           </Text>
                         </View>
                       </View>
-                      {/* <Text>{diet.dietUser}</Text> */}
-                      <Text>{event.eventDesc}</Text>
                     </Card.Content>
                   </Card>
                 </TouchableOpacity>
