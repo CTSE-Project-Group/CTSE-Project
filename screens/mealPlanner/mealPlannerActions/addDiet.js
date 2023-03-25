@@ -18,6 +18,7 @@ import {
   doc,
   setDoc,
   updateDoc,
+  arrayUnion,
 } from "firebase/firestore";
 
 const AddDietNew = ({ navigation, props }) => {
@@ -30,6 +31,19 @@ const AddDietNew = ({ navigation, props }) => {
     { field1: "", field2: "" },
   ]);
 
+  let updateUser = async (dietId) => {
+    const docRef = doc(db, "users", auth.currentUser.uid);
+    try {
+      await updateDoc(docRef, {
+        myArray: arrayUnion(dietId),
+      }).then(() => {
+        console.log("updated with", dietId);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   let addDiet = () => {
     const dbRef = collection(db, "diets");
     const data = {
@@ -41,8 +55,10 @@ const AddDietNew = ({ navigation, props }) => {
       dietFoods: textFieldsValues,
       isShared: false,
     };
+
     addDoc(dbRef, data)
       .then((docRef) => {
+        updateUser(docRef.id);
         console.log("Document has been added successfully");
       })
       .catch((error) => {
