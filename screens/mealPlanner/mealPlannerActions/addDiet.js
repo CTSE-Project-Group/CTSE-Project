@@ -166,7 +166,7 @@ const AddDietNew = ({ navigation, props }) => {
 
   const iconSetter = (iconName) => {
     return (
-      //used to set icons in the tab bar
+      //used to set icons in the tab bars
       <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
     );
   };

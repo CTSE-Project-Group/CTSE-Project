@@ -6,65 +6,50 @@ import { Styles } from "../../../styles/CardStyles";
 import { StylesLocal } from "../../../styles/LocalStyles";
 import Icon from "react-native-vector-icons/Ionicons";
 import { auth, db } from "../../../firebase";
-import { RecipeMainStyles } from "../recipeManageHome/MainStyles";
 
-
-
-const MyRecipe = ({ navigation, props }) => {
-  const [recipeIdArr, setRecipeIdArr] = useState([]);
-  const [userRecipeArr, setUserRecipeArr] = useState([]);
+const RecipeManagerHome = ({ navigation, props }) => {
   const [recipe, setRecipe] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const genID = () => useId();
+
   useEffect(() => {
     if (!mounted) {
-      setMounted(true);
-      getUser();
       getRecipe();
+      setMounted(true);
     }
-  }, [recipe, userRecipeArr]);
-
-  const getUser = async () => {
-    const docRef = doc(db, "users", auth.currentUser.uid);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists) {
-      const data = docSnap.data();
-      setUserRecipeArr(data.myArray);
-    } else {
-      console.log("No such document!");
-    }
-  };
+  }, [recipe]);
 
   let getRecipe = async () => {
     try {
       const q = query(collection(db, "recipe"));
       const querySnapshot = await getDocs(q);
-      let allRecipeIDs = [];
       let allRecipe = [];
       querySnapshot.forEach((doc) => {
         const recipeId = doc.id;
         let toDo = doc.data();
-        allRecipeIDs.push(recipeId);
         allRecipe.push({ recipeId, ...toDo });
       });
-      setRecipeIdArr(allRecipeIDs);
-
       setRecipe(allRecipe);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const logger = () => {
-    // console.log(console.log("useree", userRecipeArr));
-    // console.log(console.log("recipepp", recipeIdArr));
-    console.log(filterRecipeIds(recipeIdArr, userRecipeArr));
-  };
+  let getUsers = async (id) => {
+    const docRef = doc(db, "users", id);
 
-  const filterRecipeIds = (recipeIdArr, userRecipeArr) => {
-    return recipeIdArr.filter((recipeId) => userRecipeArr.includes(recipeId));
+    getDoc(docRef)
+      .then((doc) => {
+        if (doc.exists()) {
+        } else {
+          console.log("No such document!");
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting document:", error);
+      });
   };
 
   const iconSetter = (iconName) => {
@@ -74,18 +59,10 @@ const MyRecipe = ({ navigation, props }) => {
     );
   };
 
-  const getRecipeUser = (id, name) => {
-    if (id == auth.currentUser.uid) {
-      return "My";
-    } else {
-      return `By ${name}`;
-    }
-  };
-
   return (
     <Card style={Styles.cardContainer}>
-      <Card.Content style={Styles.cardContent}>
-        <Text style={StylesLocal.cardTitle}>My Recipe</Text>
+      <Card.Content style={Styles.cardContentWithoutAction}>
+        <Text style={StylesLocal.cardTitle}>Browse recipe</Text>
         <TextInput
           // label="Search"
           value={searchQuery}
@@ -96,46 +73,36 @@ const MyRecipe = ({ navigation, props }) => {
           underlineColorAndroid="transparent"
           placeholder="Search recipe..."
         />
+
         <ScrollView style={Styles.staticTextView}>
-          {recipe &&
+          {recipe && 
             recipe
-              .filter((recipe) => userRecipeArr.includes(recipe.recipeId))
-              .filter((recipe) =>
-                recipe.recipeName.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .map((recipe, i) => (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() => navigation.navigate("ViewRecipe", recipe)}
-                >
-                  <Card style={styles.card}>
-                    <Card.Content>
-                      <View style={styles.cardTitleRow}>
-                        <Text style={styles.cardRecipeName}>{recipe.recipeName}</Text>
-                        <View style={styles.cardAuthorView}>
-                          <Text style={styles.cardRecipeAuthor}>
-                            {getRecipeUser(recipe.recipeUser, recipe.recipeUserName)}
-                          </Text>
-                        </View>
+            .filter((recipe) =>
+              recipe.recipeName.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .map((recipe, i) => (
+              <TouchableOpacity
+                key={i}
+                onPress={() => navigation.navigate("RecipeView", recipe)}
+              >
+                <Card style={styles.card}>
+                  <Card.Content>
+                    <View style={styles.cardTitleRow}>
+                      <Text style={styles.cardRecipeName}>{recipe.recipeName}</Text>
+                      <View style={styles.cardAuthorView}>
+                        <Text style={styles.cardRecipeAuthor}>
+                          {"By " + recipe.recipeUserName}
+                        </Text>
                       </View>
-                      {/* <Text>{recipe.recipeUser}</Text> */}
-                      <Text>{recipe.recipeDesc}</Text>
-                    </Card.Content>
-                  </Card>
-                </TouchableOpacity>
-              ))}
+                    </View>
+                    {/* <Text>{recipe.recipeUser}</Text> */}
+                    <Text>{recipe.recipeDesc}</Text>
+                  </Card.Content>
+                </Card>
+              </TouchableOpacity>
+            ))}
         </ScrollView>
       </Card.Content>
-      <Card.Actions style={RecipeMainStyles.cardActionsStyle}>
-        <Button
-          uppercase={false}
-          style={RecipeMainStyles.buttonProceed}
-          onPress={() => navigation.navigate("AddRecipe", "Create")}
-          // onPress={logger}
-        >
-          <Text style={RecipeMainStyles.text}>Create new Recipe</Text>
-        </Button>
-      </Card.Actions>
     </Card>
   );
 };
@@ -220,4 +187,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyRecipe;
+export default RecipeManagerHome;
