@@ -1,5 +1,5 @@
 import { Button as Btn } from "@rneui/base";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { db, auth } from "../../../firebase";
 import { Button, Card, TextInput, Text } from "react-native-paper";
@@ -17,13 +17,12 @@ import {
 import { DietStylesLocal } from "./LocalStyles";
 import { DietMainStyles } from "./MainStyles";
 
-const ViewEvent = ({ navigation, route }) => {
-  const [validUser, setValidUser] = useState("");
-  const event = route.params;
+const AddEventNew = ({ navigation, route }) => {
+  const [name, setName] = useState("");
+  const [desc, setDesc] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
 
-  useEffect(() => {
-    setValidUser(route.params.eventUser == auth.currentUser.uid);
-  }, []);
+  const event = route.params;
 
   let updateUser = async () => {
     const docRef = doc(db, "users", auth.currentUser.uid);
@@ -48,14 +47,11 @@ const ViewEvent = ({ navigation, route }) => {
   };
 
   const color = { color: "red", fontSize: 19 };
-  const logger = () => {
-    console.log("ee", validUser);
-  };
 
   return (
     <Card style={DietMainStyles.cardContainer}>
-      <Card.Content style={DietMainStyles.cardContentSmall}>
-        <Text style={DietStylesLocal.cardTitle}>My event info</Text>
+      <Card.Content style={DietMainStyles.cardContent}>
+        <Text style={DietStylesLocal.cardTitle}>Event info</Text>
         <ScrollView style={DietMainStyles.scrollViewBasicStyle}>
           <View>
             <View style={DietStylesLocal.staticTextView}>
@@ -73,6 +69,7 @@ const ViewEvent = ({ navigation, route }) => {
                 label={insertLabel("Description", DietStylesLocal.inputLabel)}
                 placeholder="insert description"
                 value={event.eventDesc}
+                onChangeText={setDesc}
                 style={DietStylesLocal.inputField}
                 maxLength={50}
                 editable={false}
@@ -81,36 +78,17 @@ const ViewEvent = ({ navigation, route }) => {
           </View>
         </ScrollView>
       </Card.Content>
-      {!validUser ? (
-        <Card.Actions style={DietMainStyles.cardActionsStyle}>
-          <Button
-            uppercase={false}
-            style={DietMainStyles.buttonProceed}
-            onPress={logger}
-          >
-            <Text style={DietMainStyles.text}>Remove from My events</Text>
-          </Button>
-        </Card.Actions>
-      ) : (
-        <Card.Actions style={DietMainStyles.cardActionsRowStyle}>
-          <Button
-            uppercase={false}
-            style={DietMainStyles.buttonEdit}
-            onPress={logger}
-          >
-            <Text style={DietMainStyles.text}>Edit</Text>
-          </Button>
-          <Button
-            uppercase={false}
-            style={DietMainStyles.buttonDelete}
-            onPress={logger}
-          >
-            <Text style={DietMainStyles.text}>Delete</Text>
-          </Button>
-        </Card.Actions>
-      )}
+      <Card.Actions style={DietMainStyles.cardActionsStyle}>
+        <Button
+          uppercase={false}
+          style={DietMainStyles.buttonProceedGreen}
+          onPress={updateUser}
+        >
+          <Text style={DietMainStyles.text}>Add to My events</Text>
+        </Button>
+      </Card.Actions>
     </Card>
   );
 };
 
-export default ViewEvent;
+export default AddEventNew;

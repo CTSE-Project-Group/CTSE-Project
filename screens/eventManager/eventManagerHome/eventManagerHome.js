@@ -6,31 +6,20 @@ import { Styles } from "../../../styles/CardStyles";
 import { StylesLocal } from "../../../styles/LocalStyles";
 import Icon from "react-native-vector-icons/Ionicons";
 import { auth, db } from "../../../firebase";
-import { DietMainStyles } from "../eventManagerHome/MainStyles";
 
-const MyEvents = ({ navigation, props }) => {
+const EventManagerHome = ({ navigation, props }) => {
   const [events, setEvents] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const genID = () => useId();
+
   useEffect(() => {
-    getUser();
     if (!mounted) {
       getEvents();
       setMounted(true);
     }
   }, [events]);
-
-  const getUser = async () => {
-    const docRef = doc(db, "users", auth.currentUser.uid);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists) {
-      const data = docSnap.data();
-    } else {
-      console.log("No such document!");
-    }
-  };
 
   let getEvents = async () => {
     try {
@@ -70,18 +59,10 @@ const MyEvents = ({ navigation, props }) => {
     );
   };
 
-  const getEventUser = (id, name) => {
-    if (id == auth.currentUser.uid) {
-      return "My";
-    } else {
-      return `By ${name}`;
-    }
-  };
-
   return (
     <Card style={Styles.cardContainer}>
-      <Card.Content style={Styles.cardContent}>
-        <Text style={StylesLocal.cardTitle}>My events</Text>
+      <Card.Content style={Styles.cardContentWithoutAction}>
+        <Text style={StylesLocal.cardTitle}>Browse events</Text>
         <TextInput
           // label="Search"
           value={searchQuery}
@@ -101,7 +82,7 @@ const MyEvents = ({ navigation, props }) => {
             .map((event, i) => (
               <TouchableOpacity
                 key={i}
-                onPress={() => navigation.navigate("ViewEvent", event)}
+                onPress={() => navigation.navigate("EventView", event)}
               >
                 <Card style={styles.card}>
                   <Card.Content>
@@ -109,7 +90,7 @@ const MyEvents = ({ navigation, props }) => {
                       <Text style={styles.cardDietName}>{event.eventName}</Text>
                       <View style={styles.cardAuthorView}>
                         <Text style={styles.cardDietAuthor}>
-                          {getEventUser(event.eventUser, event.eventUserName)}
+                          {"By " + event.eventUserName}
                         </Text>
                       </View>
                     </View>
@@ -120,15 +101,6 @@ const MyEvents = ({ navigation, props }) => {
             ))}
         </ScrollView>
       </Card.Content>
-      <Card.Actions style={DietMainStyles.cardActionsStyle}>
-        <Button
-          uppercase={false}
-          style={DietMainStyles.buttonProceed}
-          onPress={() => navigation.navigate("AddEvent")}
-        >
-          <Text style={DietMainStyles.text}>Create new Event</Text>
-        </Button>
-      </Card.Actions>
     </Card>
   );
 };
@@ -213,4 +185,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyEvents;
+export default EventManagerHome;

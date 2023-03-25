@@ -81,7 +81,9 @@ export default function MyProfile({ navigation, props }) {
 
   return (
     <View style={DefaultScreenStyles.container}>
-      <Button>My Recipies</Button>
+      <Button onPress={() => navigation.navigate("RecipeManageStack")}>
+        My Recipies
+        </Button>
       <Button onPress={() => navigation.navigate("MealPLannerStack")}>
         My Diets
       </Button>
