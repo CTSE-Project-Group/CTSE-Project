@@ -17,7 +17,7 @@ import {
 import { RecipeStylesLocal } from "./LocalStyles";
 import { RecipeMainStyles } from "./MainStyles";
 
-const AddrecipeNew = ({ navigation, route }) => {
+const AddRecipeNew = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState("");
@@ -130,4 +130,4 @@ const AddrecipeNew = ({ navigation, route }) => {
   );
 };
 
-export default AddrecipeNew;
+export default AddRecipeNew;

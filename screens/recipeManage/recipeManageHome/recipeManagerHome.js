@@ -75,7 +75,8 @@ const RecipeManagerHome = ({ navigation, props }) => {
         />
 
         <ScrollView style={Styles.staticTextView}>
-          {recipe
+          {recipe && 
+            recipe
             .filter((recipe) =>
               recipe.recipeName.toLowerCase().includes(searchQuery.toLowerCase())
             )

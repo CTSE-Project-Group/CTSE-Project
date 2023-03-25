@@ -8,18 +8,22 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { auth, db } from "../../../firebase";
 import { RecipeMainStyles } from "../recipeManageHome/MainStyles";
 
+
+
 const MyRecipe = ({ navigation, props }) => {
+  const [recipeIdArr, setRecipeIdArr] = useState([]);
+  const [userRecipeArr, setUserRecipeArr] = useState([]);
   const [recipe, setRecipe] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    getUser();
     if (!mounted) {
-      getRecipe();
       setMounted(true);
+      getUser();
+      getRecipe();  
     }
-  }, [recipe]);
+  }, [recipe,userRecipeArr]);
 
   const getUser = async () => {
     const docRef = doc(db, "users", auth.currentUser.uid);
@@ -27,6 +31,7 @@ const MyRecipe = ({ navigation, props }) => {
 
     if (docSnap.exists) {
       const data = docSnap.data();
+      setUserRecipeArr(data.myArray);
     } else {
       console.log("No such document!");
     }
@@ -36,31 +41,30 @@ const MyRecipe = ({ navigation, props }) => {
     try {
       const q = query(collection(db, "recipe"));
       const querySnapshot = await getDocs(q);
+      let allRecipeIDs = [];
       let allRecipe = [];
       querySnapshot.forEach((doc) => {
         const recipeId = doc.id;
         let toDo = doc.data();
+        allRecipeIDs.push(recipeId);
         allRecipe.push({ recipeId, ...toDo });
       });
+      setRecipe(allRecipeIDs);
+
       setRecipe(allRecipe);
     } catch (e) {
       console.log(e);
     }
   };
 
-  let getUsers = async (id) => {
-    const docRef = doc(db, "users", id);
+  const logger = () => {
+    // console.log(console.log("useree", userRecipeArr));
+    // console.log(console.log("recipepp", recipeIdArr));
+    console.log(filterRecipeIds(recipeIdArr, userRecipeArr));
+  };
 
-    getDoc(docRef)
-      .then((doc) => {
-        if (doc.exists()) {
-        } else {
-          console.log("No such document!");
-        }
-      })
-      .catch((error) => {
-        console.log("Error getting document:", error);
-      });
+  const filterRecipeIds = (recipeIdArr, userRecipeArr) => {
+    return recipeIdArr.filter((recipeId) => userRecipeArr.includes(recipeId));
   };
 
   const iconSetter = (iconName) => {
@@ -92,10 +96,11 @@ const MyRecipe = ({ navigation, props }) => {
           underlineColorAndroid="transparent"
           placeholder="Search recipe..."
         />
-
-        <ScrollView style={Styles.staticTextView}>
-          {recipe
-            .filter((recipe) =>
+          <ScrollView style={Styles.staticTextView}>
+          {recipe &&
+            recipe
+            .filter((recipe) => userRecipeArr.includes(recipe.recipeId))
+            .filter((recipe)=>
               recipe.recipeName.toLowerCase().includes(searchQuery.toLowerCase())
             )
             .map((recipe, i) => (
@@ -125,13 +130,14 @@ const MyRecipe = ({ navigation, props }) => {
         <Button
           uppercase={false}
           style={StyleSheet.create.buttonProceed}
-          onPress={() => navigation.navigate("AddRecipe")}
+          onPress={() => navigation.navigate("AddRecipe","Create")}
+
         >
           <Text style={StyleSheet.create.text1}>Create new Recipe</Text>
         </Button>
       </Card.Actions>
     </Card>
-  );
+ );
 };
 const commonstaticTextViewProps = {
   borderWidth: 5,

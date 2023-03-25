@@ -10,34 +10,51 @@ import {
   addDoc,
   query,
   where,
+  deleteDoc,
   updateDoc,
   doc,
   arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import { RecipeStylesLocal } from "./LocalStyles";
 import { RecipeMainStyles } from "./MainStyles";
 
 const ViewRecipe = ({ navigation, route }) => {
-  const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
-  const [numberOfTextFields, setNumberOfTextFields] = useState(1);
-  const [textFieldsValues, setTextFieldsValues] = useState([
-    { field1: "", field2: "" },
-  ]);
-
+  const [validUser, setValidUser] = useState("");
+  const [isEditable, setIsEditable] = useState(false);
+  const [isEditClicked, setIsEditClicked] = useState(false);
+  
   const recipe = route.params;
+
+  useEffect(() => {
+    setValidUser(route.params.recipeUser == auth.currentUser.uid);
+    setDesc(recipe.recipeDesc);
+    setPrice(recipe.recipePrice);
+  }, []);
 
   let updateUser = async () => {
     const docRef = doc(db, "users", auth.currentUser.uid);
     try {
       await updateDoc(docRef, {
-        myArray: arrayUnion(recipe.recipeId),
+        myArray: arrayRemove(recipe.recipeId),
       });
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const deleteRecipe = () => {
+    const docRef = doc(db, "recipe", recipe.recipeId);
+    deleteDoc(docRef)
+      .then(() => {
+        console.log("Doc Deleted");
+        updateUser();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const insertLabel = (labelValue, style) => (
@@ -51,7 +68,19 @@ const ViewRecipe = ({ navigation, route }) => {
     );
   };
 
-  const color = { color: "red", fontSize: 19 };
+  const logger = () => {
+    console.log("ee", validUser);
+  };
+
+  const handleEditClicked = () => {
+    setIsEditClicked(true);
+    setIsEditable(true);
+  };
+
+  const handleConfirmClicked = () => {
+    setIsEditClicked(false);
+    setIsEditable(false);
+  };
 
   return (
     <Card style={RecipeMainStyles.cardContainer}>
@@ -74,42 +103,47 @@ const ViewRecipe = ({ navigation, route }) => {
                 label={insertLabel("Description", RecipeStylesLocal.inputLabel)}
                 placeholder="insert description"
                 value={recipe.recipeDesc}
-                onChangeText={setDesc}
                 style={RecipeStylesLocal.inputField}
                 maxLength={50}
-                editable={false}
+                editable={isEditable}
               />
               <TextInput
                 underlineColor="transparent"
                 activeUnderlineColor="transparent"
                 label={insertLabel("Price", RecipeStylesLocal.inputLabel)}
                 placeholder="insert price"
-                onChangeText={setPrice}
                 value={recipe.recipePrice}
                 style={RecipeStylesLocal.inputField}
                 multiline={true}
-                editable={false}
+                editable={isEditable}
               />
             </View>
             <View style={RecipeStylesLocal.dynamicTextFieldOuterContainer}>
-              {recipe.recipeIngredients.map((Ingredients, i) => (
-                <View key={i} style={RecipeStylesLocal.dynamicTextFieldContainer}>
+              {recipe.recipeIngredients &&
+                recipe.recipeIngredients.map((Ingredients, i) => (
+                <View 
+                  key={i} 
+                  style={RecipeStylesLocal.dynamicTextFieldContainer}
+                  >
                   <TextInput
                     underlineColor="transparent"
                     activeUnderlineColor="transparent"
                     label={insertLabel("Ingredients", RecipeStylesLocal.inputLabel)}
                     style={RecipeStylesLocal.inputFieldDual}
                     value={Ingredients.field1}
-                    editable={false}
+                    editable={isEditable}
                   />
                   <TextInput
                     keyboardType="numeric"
                     underlineColor="transparent"
                     activeUnderlineColor="transparent"
-                    label={insertLabel("Quantity(grams)", RecipeStylesLocal.inputLabel)}
+                    label={insertLabel(
+                      "Quantity(grams)", 
+                      RecipeStylesLocal.inputLabel
+                      )}
                     style={RecipeStylesLocal.inputFieldDua2}
                     value={Ingredients.field2}
-                    editable={false}
+                    editable={isEditable}
                   />
                 </View>
               ))}
@@ -117,22 +151,44 @@ const ViewRecipe = ({ navigation, route }) => {
           </View>
         </ScrollView>
       </Card.Content>
+      {!validUser ? (
+        <Card.Actions style={RecipeMainStyles.cardAction12}>
+          <Button
+            uppercase={false}
+            style={RecipeMainStyles.buttonProceed}
+            onPress={updateUser}
+          >
+            <Text style={RecipeMainStyles.text}>Remove from My diets</Text>
+          </Button>
+        </Card.Actions>
+      ) : isEditClicked ? (
       <Card.Actions style={RecipeMainStyles.cardActionsRowStyle}>
         <Button
           uppercase={false}
           style={RecipeMainStyles.buttonEdit}
-          onPress={updateUser}
+          onPress={handleConfirmClicked}
+        >
+          <Text style={RecipeMainStyles.text}>Confirm Edit</Text>
+        </Button>
+      </Card.Actions>
+      ) : ( 
+        <Card.Actions style={RecipeMainStyles.cardActionsRowStyle}>
+        <Button
+          uppercase={false}
+          style={RecipeMainStyles.buttonEdit}
+          onPress={() => navigation.navigate("EditRecipe", recipe.recipeId)}
         >
           <Text style={RecipeMainStyles.text}>Edit</Text>
         </Button>
         <Button
           uppercase={false}
           style={RecipeMainStyles.buttonDelete}
-          onPress={updateUser}
+          onPress={deleteRecipe}
         >
           <Text style={RecipeMainStyles.text}>Delete</Text>
         </Button>
       </Card.Actions>
+      )}
     </Card>
   );
 };
