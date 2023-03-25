@@ -21,9 +21,9 @@ const MyRecipe = ({ navigation, props }) => {
     if (!mounted) {
       setMounted(true);
       getUser();
-      getRecipe();  
+      getRecipe();
     }
-  }, [recipe,userRecipeArr]);
+  }, [recipe, userRecipeArr]);
 
   const getUser = async () => {
     const docRef = doc(db, "users", auth.currentUser.uid);
@@ -49,7 +49,7 @@ const MyRecipe = ({ navigation, props }) => {
         allRecipeIDs.push(recipeId);
         allRecipe.push({ recipeId, ...toDo });
       });
-      setRecipe(allRecipeIDs);
+      setRecipeIdArr(allRecipeIDs);
 
       setRecipe(allRecipe);
     } catch (e) {
@@ -96,48 +96,48 @@ const MyRecipe = ({ navigation, props }) => {
           underlineColorAndroid="transparent"
           placeholder="Search recipe..."
         />
-          <ScrollView style={Styles.staticTextView}>
+        <ScrollView style={Styles.staticTextView}>
           {recipe &&
             recipe
-            .filter((recipe) => userRecipeArr.includes(recipe.recipeId))
-            .filter((recipe)=>
-              recipe.recipeName.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map((recipe, i) => (
-              <TouchableOpacity
-                key={i}
-                onPress={() => navigation.navigate("ViewRecipe", recipe)}
-              >
-                <Card style={styles.card}>
-                  <Card.Content>
-                    <View style={styles.cardTitleRow}>
-                      <Text style={styles.cardRecipeName}>{recipe.recipeName}</Text>
-                      <View style={styles.cardAuthorView}>
-                        <Text style={styles.cardRecipeAuthor}>
-                          {getRecipeUser(recipe.recipeUser, recipe.recipeUserName)}
-                        </Text>
+              .filter((recipe) => userRecipeArr.includes(recipe.recipeId))
+              .filter((recipe) =>
+                recipe.recipeName.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((recipe, i) => (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() => navigation.navigate("ViewRecipe", recipe)}
+                >
+                  <Card style={styles.card}>
+                    <Card.Content>
+                      <View style={styles.cardTitleRow}>
+                        <Text style={styles.cardRecipeName}>{recipe.recipeName}</Text>
+                        <View style={styles.cardAuthorView}>
+                          <Text style={styles.cardRecipeAuthor}>
+                            {getRecipeUser(recipe.recipeUser, recipe.recipeUserName)}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                    {/* <Text>{recipe.recipeUser}</Text> */}
-                    <Text>{recipe.recipeDesc}</Text>
-                  </Card.Content>
-                </Card>
-              </TouchableOpacity>
-            ))}
+                      {/* <Text>{recipe.recipeUser}</Text> */}
+                      <Text>{recipe.recipeDesc}</Text>
+                    </Card.Content>
+                  </Card>
+                </TouchableOpacity>
+              ))}
         </ScrollView>
       </Card.Content>
-      <Card.Actions Style={StyleSheet.create.cardAction12}>
+      <Card.Actions style={RecipeMainStyles.cardActionsStyle}>
         <Button
           uppercase={false}
-          style={StyleSheet.create.buttonProceed}
-          onPress={() => navigation.navigate("AddRecipe","Create")}
-
+          style={RecipeMainStyles.buttonProceed}
+          onPress={() => navigation.navigate("AddRecipe", "Create")}
+          // onPress={logger}
         >
-          <Text style={StyleSheet.create.text1}>Create new Recipe</Text>
+          <Text style={RecipeMainStyles.text}>Create new Recipe</Text>
         </Button>
       </Card.Actions>
     </Card>
- );
+  );
 };
 const commonstaticTextViewProps = {
   borderWidth: 5,
@@ -217,32 +217,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 5,
     backgroundColor: "#EAF2F8",
-  },
-  cardAction12: {
-    //card action style used for single button
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 50,
-    height: "10%",
-    backgroundColor: "white",
-  },
-  buttonProceed: {
-    fontSize: 6,
-    width: "100%",
-    height: "80%",
-    alignSelf: "center",
-    justifyContent: "center",
-    marginBottom: 1,
-    backgroundColor: "#C39BD3",
-    borderRadius: 7,
-    borderColor: "white",
-  },
-  text1: {
-    fontSize: 18,
-    lineHeight: 21,
-    fontWeight: "bold",
-    letterSpacing: 0.25,
-    color: "white",
   },
 });
 
