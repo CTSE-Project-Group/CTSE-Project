@@ -50,7 +50,7 @@ export const DietMainStyles = StyleSheet.create({
   buttonProceedGreen: {
     fontSize: 6,
     width: "100%",
-    height: "80%",
+    height: "100%",
     alignSelf: "center",
     justifyContent: "center",
     marginBottom: 1,
