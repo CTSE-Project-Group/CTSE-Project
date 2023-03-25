@@ -6,6 +6,7 @@ import { LogBox } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import MyProfileStack from "../../screens/myProfile/MyProfileStack";
 import MealPLannerHomeStack from "../../screens/mealPlanner/mealPlannerHomeStack";
+import ShoppingListHomeStack from "../../screens/shoppingList/shoppingListHomeStack";
 
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
@@ -72,7 +73,7 @@ const MyTabs = ({ navigation, props }) => {
         />
         <Tab.Screen
           name="Shopping"
-          component={TestScreen}
+          component={ShoppingListHomeStack}
           options={{
             tabBarIcon: ({ focused }) => {
               return iconSetter("ios-basket", focused);

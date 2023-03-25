@@ -87,7 +87,8 @@ export default function MyProfile({ navigation, props }) {
       <Button onPress={() => navigation.navigate("MealPLannerStack")}>
         My Diets
       </Button>
-      <Button>My Shopping lists</Button>
+      <Button onPress={() => navigation.navigate("ShoppingListStack")}>
+        My Shopping lists</Button>
       <Button onPress={() => navigation.navigate("EventManagerStack")}>
         Events
       </Button>

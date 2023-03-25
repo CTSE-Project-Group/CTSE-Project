@@ -8,6 +8,7 @@ import EventManagerStack from "../eventManager/eventManagerStack";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import MyProfile from "./MyProfile";
+import ShoppingListStack from "../shoppingList/shoppingListStack";
 
 export default function MyProfileStack() {
   const Stack = createNativeStackNavigator();
@@ -22,6 +23,7 @@ export default function MyProfileStack() {
         <Stack.Screen name="MealPLannerStack" component={MealPLannerStack} />
         <Stack.Screen name="RecipeManageStack" component={RecipeManageStack} />
         <Stack.Screen name="EventManagerStack" component={EventManagerStack} />
+        <Stack.Screen name="ShoppingListStack" component={ShoppingListStack} />
         {/*create necessary files for the relevant function  <refer mealPlanner folder>
          Then create a stack using them .
          Import the stack here . 
