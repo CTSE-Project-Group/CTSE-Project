@@ -20,7 +20,12 @@ import { DietMainStyles } from "./MainStyles";
 const AddEventNew = ({ navigation, route }) => {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
+  const [instruct, setInstruct] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const [numberOfTextFields, setNumberOfTextFields] = useState(1);
+  const [textFieldsValues, setTextFieldsValues] = useState([
+    { field1: "", field2: "" },
+  ]);
 
   const event = route.params;
 
@@ -74,6 +79,40 @@ const AddEventNew = ({ navigation, route }) => {
                 maxLength={50}
                 editable={false}
               />
+              <TextInput
+                underlineColor="transparent"
+                activeUnderlineColor="transparent"
+                label={insertLabel("Instructions", DietStylesLocal.inputLabel)}
+                placeholder="insert instructions"
+                onChangeText={setInstruct}
+                value={event.eventIns}
+                style={DietStylesLocal.inputField}
+                multiline={true}
+                editable={false}
+              />
+            </View>
+            <View style={DietStylesLocal.dynamicTextFieldOuterContainer}>
+              {event.eventFoods.map((food, i) => (
+                <View key={i} style={DietStylesLocal.dynamicTextFieldContainer}>
+                  <TextInput
+                    underlineColor="transparent"
+                    activeUnderlineColor="transparent"
+                    label={insertLabel("Food", DietStylesLocal.inputLabel)}
+                    style={DietStylesLocal.inputFieldDual}
+                    value={food.field1}
+                    editable={false}
+                  />
+                  <TextInput
+                    keyboardType="numeric"
+                    underlineColor="transparent"
+                    activeUnderlineColor="transparent"
+                    label={insertLabel("Quantity", DietStylesLocal.inputLabel)}
+                    style={DietStylesLocal.inputFieldDua2}
+                    value={food.field2}
+                    editable={false}
+                  />
+                </View>
+              ))}
             </View>
           </View>
         </ScrollView>

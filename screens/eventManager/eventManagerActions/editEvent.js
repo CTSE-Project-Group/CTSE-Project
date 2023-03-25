@@ -1,5 +1,5 @@
 import { Button as Btn } from "@rneui/base";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { db, auth } from "../../../firebase";
 import { Styles } from "../../../styles/CardStyles";
@@ -17,49 +17,58 @@ import {
   deleteDoc,
   doc,
   setDoc,
+  getDoc,
   updateDoc,
-  arrayUnion,
 } from "firebase/firestore";
 
-const AddEventNew = ({ navigation, props }) => {
+const EditEventNew = ({ navigation, route }) => {
+  const [eventID, setEventId] = useState("");
+  const [eventArrLen, setEventArrLen] = useState(0);
+  const [eventArr, setEventArr] = useState([{ field1: "", field2: "" }]);
+  const [event, setEvent] = useState();
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [instruct, setInstruct] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [numberOfTextFields, setNumberOfTextFields] = useState(1);
-  const [textFieldsValues, setTextFieldsValues] = useState([
-    { field1: "", field2: "" },
-  ]);
 
-  let updateUser = async (eventId) => {
-    const docRef = doc(db, "users", auth.currentUser.uid);
-    try {
-      await updateDoc(docRef, {
-        myArray: arrayUnion(eventId),
-      }).then(() => {
-        console.log("updated with", eventId);
-      });
-    } catch (e) {
-      console.log(e);
+  useEffect(() => {
+    getEvent();
+  }, []);
+
+  const getEvent = async () => {
+    const docRef = doc(db, "events", route.params);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists) {
+      const data = docSnap.data();
+      const id = docSnap.id;
+      setEventId(id);
+      setEvent(data);
+      setName(data.eventName);
+      setDesc(data.eventDesc);
+      setInstruct(data.eventIns);
+      setEventArrLen(data.eventFoods.length);
+      setEventArr(data.eventFoods);
+    } else {
+      console.log("No such document!");
     }
   };
 
-  let addEvent = () => {
-    const dbRef = collection(db, "events");
+  let updateEvent = () => {
     const data = {
-      eventUser: auth.currentUser.uid,
-      eventUserName: auth.currentUser.displayName,
+      eventUser: event.eventUser,
+      eventUserName: event.eventUserName,
       eventName: name,
       eventDesc: desc,
       eventIns: instruct,
-      eventFoods: textFieldsValues,
+      eventFoods: eventArr,
       isShared: false,
     };
 
-    addDoc(dbRef, data)
-      .then((docRef) => {
-        updateUser(docRef.id);
-        console.log("Document has been added successfully");
+    const docRef = doc(db, "events", route.params);
+    setDoc(docRef, data)
+      .then(() => {
+        console.log("Doc Updated");
       })
       .catch((error) => {
         console.log(error);
@@ -67,13 +76,59 @@ const AddEventNew = ({ navigation, props }) => {
   };
 
   const logger = () => {
-    console.log("click", auth.currentUser.displayName);
+    console.log(event);
+  };
+
+  const handleAddTextField = () => {
+    setEventArrLen(eventArrLen + 1);
+    setEventArr([...eventArr, { field1: "", field2: "" }]);
+  };
+
+  const handleDeleteTextField = (index) => {
+    const newValues = [...eventArr];
+    newValues.splice(index, 1);
+    setEventArr(newValues);
+    setEventArrLen(eventArrLen - 1);
+  };
+
+  const handleTextFieldChange = (text, index, field) => {
+    const newValues = [...eventArr];
+    newValues[index][field] = text;
+    setEventArr(newValues);
+  };
+
+  const insertLabel = (labelValue, style) => (
+    <Text style={style}>{labelValue}</Text>
+  );
+
+  hideAlert = () => {
+    setShowAlert(false);
+  };
+
+  openAlert = () => {
+    if (name == "" || desc == "" || instruct == "") {
+      setShowAlert(true);
+    } else if (!checkAllFieldsNotNull()) {
+      setShowAlert(true);
+    } else {
+      updateEvent();
+    }
+  };
+
+  const checkAllFieldsNotNull = () => {
+    for (let i = 0; i < eventArr.length; i++) {
+      const obj = eventArr[i];
+      if (obj.field1 == "" || obj.field2 == "") {
+        return false;
+      }
+    }
+    return true;
   };
 
   const renderTextFields = (id) => {
     const textFields = [];
 
-    for (let i = 0; i < numberOfTextFields; i++) {
+    for (let i = 0; i < eventArr.length; i++) {
       textFields.push(
         <View key={i} style={StylesLocal.dynamicTextFieldContainer}>
           <TextInput
@@ -83,7 +138,7 @@ const AddEventNew = ({ navigation, props }) => {
             style={StylesLocal.inputFieldDual}
             key={i}
             placeholder={`insert item`}
-            value={textFieldsValues[i].field1}
+            value={eventArr[i].field1}
             onChangeText={(text) => handleTextFieldChange(text, i, "field1")}
           />
           <TextInput
@@ -94,7 +149,7 @@ const AddEventNew = ({ navigation, props }) => {
             style={StylesLocal.inputFieldDua2}
             key={i + 1}
             placeholder={`insert qty`}
-            value={textFieldsValues[i].field2}
+            value={eventArr[i].field2}
             onChangeText={(text) => handleTextFieldChange(text, i, "field2")}
           />
           <TouchableOpacity
@@ -107,6 +162,13 @@ const AddEventNew = ({ navigation, props }) => {
       );
     }
     return textFields;
+  };
+
+  const iconSetter = (iconName) => {
+    return (
+      //used to set icons in the tab bar
+      <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
+    );
   };
 
   const renderTextViews = (id) => (
@@ -142,64 +204,11 @@ const AddEventNew = ({ navigation, props }) => {
     />
   );
 
-  const handleAddTextField = () => {
-    setNumberOfTextFields(numberOfTextFields + 1);
-    setTextFieldsValues([...textFieldsValues, { field1: "", field2: "" }]);
-  };
-
-  const handleTextFieldChange = (text, index, field) => {
-    const newValues = [...textFieldsValues];
-    newValues[index][field] = text;
-    setTextFieldsValues(newValues);
-  };
-
-  const handleDeleteTextField = (index) => {
-    const newValues = [...textFieldsValues];
-    newValues.splice(index, 1);
-    setTextFieldsValues(newValues);
-    setNumberOfTextFields(numberOfTextFields - 1);
-  };
-
-  const insertLabel = (labelValue, style) => (
-    <Text style={style}>{labelValue}</Text>
-  );
-
-  const iconSetter = (iconName) => {
-    return (
-      //used to set icons in the tab bar
-      <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
-    );
-  };
-
-  openAlert = () => {
-    if (name == "" || desc == "" || instruct == "") {
-      setShowAlert(true);
-    } else if (!checkAllFieldsNotNull()) {
-      setShowAlert(true);
-    } else {
-      addEvent();
-    }
-  };
-
-  hideAlert = () => {
-    setShowAlert(false);
-  };
-
-  const checkAllFieldsNotNull = () => {
-    for (let i = 0; i < textFieldsValues.length; i++) {
-      const obj = textFieldsValues[i];
-      if (obj.field1 == "" || obj.field2 == "") {
-        return false;
-      }
-    }
-    return true;
-  };
-
   return (
     <Card style={Styles.cardContainer}>
       {/* <Card.Title style={Styles.cardTitleStyle}>EEEE</Card.Title> */}
       <Card.Content style={Styles.cardContent}>
-        <Text style={StylesLocal.cardTitle}>Create event</Text>
+        <Text style={StylesLocal.cardTitle}>Edit event</Text>
         <ScrollView style={Styles.scrollViewBasicStyle}>
           <View>
             <View style={StylesLocal.staticTextView}>
@@ -246,14 +255,14 @@ const AddEventNew = ({ navigation, props }) => {
       <Card.Actions style={Styles.cardActionsStyle}>
         <Button
           uppercase={false}
-          style={Styles.buttonProceed}
+          style={Styles.buttonProceedConfirm}
           onPress={() => openAlert()}
         >
-          <Text style={Styles.text}> Proceed</Text>
+          <Text style={Styles.text}> Confirm Edit</Text>
         </Button>
       </Card.Actions>
     </Card>
   );
 };
 
-export default AddEventNew;
+export default EditEventNew;

@@ -75,30 +75,32 @@ const EventManagerHome = ({ navigation, props }) => {
         />
 
         <ScrollView style={Styles.staticTextView}>
-          {events
-            .filter((event) =>
-              event.eventName.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map((event, i) => (
-              <TouchableOpacity
-                key={i}
-                onPress={() => navigation.navigate("EventView", event)}
-              >
-                <Card style={styles.card}>
-                  <Card.Content>
-                    <View style={styles.cardTitleRow}>
-                      <Text style={styles.cardDietName}>{event.eventName}</Text>
-                      <View style={styles.cardAuthorView}>
-                        <Text style={styles.cardDietAuthor}>
-                          {"By " + event.eventUserName}
-                        </Text>
+          {events &&
+            events
+              .filter((event) =>
+                event.eventName.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((event, i) => (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() => navigation.navigate("EventView", event)}
+                >
+                  <Card style={styles.card}>
+                    <Card.Content>
+                      <View style={styles.cardTitleRow}>
+                        <Text style={styles.cardDietName}>{event.eventName}</Text>
+                        <View style={styles.cardAuthorView}>
+                          <Text style={styles.cardDietAuthor}>
+                            {"By " + event.eventUserName}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                    {/* <Text>{diet.dietUser}</Text> */}
-                  </Card.Content>
-                </Card>
-              </TouchableOpacity>
-            ))}
+                      {/* <Text>{diet.dietUser}</Text> */}
+                      <Text>{event.eventDesc}</Text>
+                    </Card.Content>
+                  </Card>
+                </TouchableOpacity>
+              ))}
         </ScrollView>
       </Card.Content>
     </Card>
