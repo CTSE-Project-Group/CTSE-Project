@@ -30,6 +30,17 @@ const AddDietNew = ({ navigation, props }) => {
     { field1: "", field2: "" },
   ]);
 
+  let updateUser = async () => {
+    const docRef = doc(db, "users", auth.currentUser.uid);
+    try {
+      await updateDoc(docRef, {
+        myArray: arrayUnion(diet.dietId),
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   let addDiet = () => {
     const dbRef = collection(db, "diets");
     const data = {
@@ -41,8 +52,10 @@ const AddDietNew = ({ navigation, props }) => {
       dietFoods: textFieldsValues,
       isShared: false,
     };
+
     addDoc(dbRef, data)
       .then((docRef) => {
+        console.log("ref", docRef);
         console.log("Document has been added successfully");
       })
       .catch((error) => {

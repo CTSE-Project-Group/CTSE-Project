@@ -23,6 +23,7 @@ export default function CreateUserName({ navigation, route }) {
       email: userEmail,
       name: username,
       username: "UserUser",
+      myArray: [],
     };
 
     setDoc(doc(db, "users", userID), data)
