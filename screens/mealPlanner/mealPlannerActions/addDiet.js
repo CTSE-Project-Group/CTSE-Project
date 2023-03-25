@@ -32,9 +32,15 @@ const AddDietNew = ({ navigation, props }) => {
 
   let addDiet = () => {
     const dbRef = collection(db, "diets");
-
-    console.log(data);
-
+    const data = {
+      dietUser: auth.currentUser.uid,
+      dietUserName: auth.currentUser.displayName,
+      dietName: name,
+      dietDesc: desc,
+      dietIns: instruct,
+      dietFoods: textFieldsValues,
+      isShared: false,
+    };
     addDoc(dbRef, data)
       .then((docRef) => {
         console.log("Document has been added successfully");
