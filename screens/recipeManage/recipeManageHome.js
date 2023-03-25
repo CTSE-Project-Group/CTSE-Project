@@ -4,11 +4,11 @@ import AppStyles from "../../styles/AppStyles";
 import DefaultScreenStyles from "../../styles/DefaultScreenStyles";
 import { auth, currentUser } from "../../firebase";
 
-const EventManagerHome = ({ navigation, props }) => {
+const RecipeManageHome = ({ navigation, props }) => {
   console.log(auth.currentUser.displayName);
   return (
     <View style={DefaultScreenStyles.container}>
-      <Text>Event Manager Home</Text>
+      <Text>Recipe Manager Home</Text>
     </View>
   );
 };
@@ -21,4 +21,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EventManagerHome;
+export default RecipeManageHome;

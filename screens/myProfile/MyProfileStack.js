@@ -3,6 +3,7 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import DefaultScreenStyles from "../../styles/DefaultScreenStyles";
 import MealPLannerStack from "../mealPlanner/mealPlannerStack";
+import RecipeManageStack from "../recipeManage/recipeManageStack";
 import EventManagerStack from "../eventManager/eventManagerStack";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -19,6 +20,7 @@ export default function MyProfileStack() {
       >
         <Stack.Screen name="MyProfile" component={MyProfile} />
         <Stack.Screen name="MealPLannerStack" component={MealPLannerStack} />
+        <Stack.Screen name="RecipeManageStack" component={RecipeManageStack} />
         <Stack.Screen name="EventManagerStack" component={EventManagerStack} />
         {/*create necessary files for the relevant function  <refer mealPlanner folder>
          Then create a stack using them .
