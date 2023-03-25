@@ -10,30 +10,49 @@ import {
   addDoc,
   query,
   where,
+  deleteDoc,
   updateDoc,
   doc,
   arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import { DietStylesLocal } from "./LocalStyles";
 import { DietMainStyles } from "./MainStyles";
 
 const ViewEvent = ({ navigation, route }) => {
+  const [desc, setDesc] = useState("");
   const [validUser, setValidUser] = useState("");
+  const [isEditable, setIsEditable] = useState(false);
+  const [isEditClicked, setIsEditClicked] = useState(false);
+
   const event = route.params;
 
   useEffect(() => {
     setValidUser(route.params.eventUser == auth.currentUser.uid);
+    setDesc(event.eventDesc);
   }, []);
 
   let updateUser = async () => {
     const docRef = doc(db, "users", auth.currentUser.uid);
     try {
       await updateDoc(docRef, {
-        myArray: arrayUnion(event.eventId),
+        myArray: arrayRemove(event.eventId),
       });
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const deleteEvent = () => {
+    const docRef = doc(db, "events", event.eventId);
+    deleteDoc(docRef)
+      .then(() => {
+        console.log("Doc Deleted");
+        updateUser();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const insertLabel = (labelValue, style) => (
@@ -47,9 +66,18 @@ const ViewEvent = ({ navigation, route }) => {
     );
   };
 
-  const color = { color: "red", fontSize: 19 };
   const logger = () => {
     console.log("ee", validUser);
+  };
+
+  const handleEditClicked = () => {
+    setIsEditClicked(true);
+    setIsEditable(true);
+  };
+
+  const handleConfirmClicked = () => {
+    setIsEditClicked(false);
+    setIsEditable(false);
   };
 
   return (
@@ -75,7 +103,7 @@ const ViewEvent = ({ navigation, route }) => {
                 value={event.eventDesc}
                 style={DietStylesLocal.inputField}
                 maxLength={50}
-                editable={false}
+                editable={isEditable}
               />
             </View>
           </View>
@@ -86,9 +114,19 @@ const ViewEvent = ({ navigation, route }) => {
           <Button
             uppercase={false}
             style={DietMainStyles.buttonProceed}
-            onPress={logger}
+            onPress={updateUser}
           >
             <Text style={DietMainStyles.text}>Remove from My events</Text>
+          </Button>
+        </Card.Actions>
+      ) : isEditClicked ? (
+        <Card.Actions style={DietMainStyles.cardActionsStyle}>
+          <Button
+            uppercase={false}
+            style={DietMainStyles.buttonProceedEdit}
+            onPress={handleConfirmClicked}
+          >
+            <Text style={DietMainStyles.text}>Confirm edits</Text>
           </Button>
         </Card.Actions>
       ) : (
@@ -96,14 +134,14 @@ const ViewEvent = ({ navigation, route }) => {
           <Button
             uppercase={false}
             style={DietMainStyles.buttonEdit}
-            onPress={logger}
+            onPress={() => navigation.navigate("EditEvent", event.eventId)}
           >
             <Text style={DietMainStyles.text}>Edit</Text>
           </Button>
           <Button
             uppercase={false}
             style={DietMainStyles.buttonDelete}
-            onPress={logger}
+            onPress={deleteEvent}
           >
             <Text style={DietMainStyles.text}>Delete</Text>
           </Button>

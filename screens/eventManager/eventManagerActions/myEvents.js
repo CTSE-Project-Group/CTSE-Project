@@ -9,17 +9,19 @@ import { auth, db } from "../../../firebase";
 import { DietMainStyles } from "../eventManagerHome/MainStyles";
 
 const MyEvents = ({ navigation, props }) => {
+  const [eventIdArr, setEventIdArr] = useState([]);
+  const [userEventArr, setUserEventArr] = useState([]);
   const [events, setEvents] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    getUser();
     if (!mounted) {
-      getEvents();
       setMounted(true);
+      getUser();
+      getEvents();
     }
-  }, [events]);
+  }, [events, userEventArr]);
 
   const getUser = async () => {
     const docRef = doc(db, "users", auth.currentUser.uid);
@@ -27,6 +29,7 @@ const MyEvents = ({ navigation, props }) => {
 
     if (docSnap.exists) {
       const data = docSnap.data();
+      setUserEventArr(data.myArray);
     } else {
       console.log("No such document!");
     }
@@ -36,31 +39,30 @@ const MyEvents = ({ navigation, props }) => {
     try {
       const q = query(collection(db, "events"));
       const querySnapshot = await getDocs(q);
+      let allEventIDs = [];
       let allEvents = [];
       querySnapshot.forEach((doc) => {
         const eventId = doc.id;
         let toDo = doc.data();
+        allEventIDs.push(eventId);
         allEvents.push({ eventId, ...toDo });
       });
+      setEventIdArr(allEventIDs);
+
       setEvents(allEvents);
     } catch (e) {
       console.log(e);
     }
   };
 
-  let getUsers = async (id) => {
-    const docRef = doc(db, "users", id);
+  const logger = () => {
+    // console.log(console.log("useree", userDietArr));
+    // console.log(console.log("dietpp", dietIdArr));
+    console.log(filterEventIds(eventIdArr, userEventArr));
+  };
 
-    getDoc(docRef)
-      .then((doc) => {
-        if (doc.exists()) {
-        } else {
-          console.log("No such document!");
-        }
-      })
-      .catch((error) => {
-        console.log("Error getting document:", error);
-      });
+  const filterEventIds = (eventIdArr, userEventArr) => {
+    return eventIdArr.filter((eventId) => userEventArr.includes(eventId));
   };
 
   const iconSetter = (iconName) => {
@@ -92,39 +94,40 @@ const MyEvents = ({ navigation, props }) => {
           underlineColorAndroid="transparent"
           placeholder="Search events..."
         />
-
         <ScrollView style={Styles.staticTextView}>
-          {events
-            .filter((event) =>
-              event.eventName.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map((event, i) => (
-              <TouchableOpacity
-                key={i}
-                onPress={() => navigation.navigate("ViewEvent", event)}
-              >
-                <Card style={styles.card}>
-                  <Card.Content>
-                    <View style={styles.cardTitleRow}>
-                      <Text style={styles.cardDietName}>{event.eventName}</Text>
-                      <View style={styles.cardAuthorView}>
-                        <Text style={styles.cardDietAuthor}>
-                          {getEventUser(event.eventUser, event.eventUserName)}
-                        </Text>
+          {events &&
+            events
+              .filter((event) => userEventArr.includes(event.eventId))
+              .filter((event) =>
+                event.eventName.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((event, i) => (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() => navigation.navigate("ViewEvent", event)}
+                >
+                  <Card style={styles.card}>
+                    <Card.Content>
+                      <View style={styles.cardTitleRow}>
+                        <Text style={styles.cardDietName}>{event.eventName}</Text>
+                        <View style={styles.cardAuthorView}>
+                          <Text style={styles.cardDietAuthor}>
+                            {getEventUser(event.eventUser, event.eventUserName)}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                    {/* <Text>{diet.dietUser}</Text> */}
-                  </Card.Content>
-                </Card>
-              </TouchableOpacity>
-            ))}
+                    </Card.Content>
+                  </Card>
+                </TouchableOpacity>
+              ))}
         </ScrollView>
       </Card.Content>
       <Card.Actions style={DietMainStyles.cardActionsStyle}>
         <Button
           uppercase={false}
           style={DietMainStyles.buttonProceed}
-          onPress={() => navigation.navigate("AddEvent")}
+          onPress={() => navigation.navigate("AddEvent", "Create")}
+        // onPress={logger}
         >
           <Text style={DietMainStyles.text}>Create new Event</Text>
         </Button>
