@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 const defaultColor = "white";
 
-export const DietMainStyles = StyleSheet.create({
+export const RecipeMainStyles = StyleSheet.create({
   cardContainer: {
     paddingTop: "10%",
     height: "92%",
@@ -11,13 +11,6 @@ export const DietMainStyles = StyleSheet.create({
     // flex: 6,
     paddingTop: 30,
     height: "90%",
-    backgroundColor: defaultColor,
-    // backgroundColor: "#F90D8A",
-  },
-  cardContentSmall: {
-    // flex: 6,
-    paddingTop: 30,
-    height: "85%",
     backgroundColor: defaultColor,
     // backgroundColor: "#F90D8A",
   },
@@ -33,13 +26,7 @@ export const DietMainStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     fontSize: 50,
-    height: "20%",
-    backgroundColor: defaultColor,
-  },
-  cardActionsRowStyle: {
-    //card action style used for single button,
-    fontSize: 50,
-    height: "20%",
+    height: "10%",
     backgroundColor: defaultColor,
   },
   scrollViewStyle: {
@@ -52,46 +39,24 @@ export const DietMainStyles = StyleSheet.create({
   buttonProceed: {
     fontSize: 6,
     width: "100%",
-    height: "45%",
+    height: "80%",
     alignSelf: "center",
     justifyContent: "center",
     marginBottom: 1,
-    backgroundColor: "#E74C3C",
+    backgroundColor: "#C39BD3",
     borderRadius: 7,
     borderColor: "white",
   },
-  buttonProceedEdit: {
+  buttonProceedGreen: {
     fontSize: 6,
     width: "100%",
-    height: "45%",
+    height: "80%",
     alignSelf: "center",
     justifyContent: "center",
     marginBottom: 1,
-    backgroundColor: "#1ABC9C",
+    backgroundColor: "#52BE80",
     borderRadius: 7,
     borderColor: "white",
-  },
-  buttonEdit: {
-    width: "49%",
-    height: "45%",
-    fontSize: 6,
-    alignSelf: "center",
-    justifyContent: "center",
-    marginBottom: 1,
-    borderRadius: 7,
-    borderColor: "white",
-    backgroundColor: "#5499C7",
-  },
-  buttonDelete: {
-    width: "49%",
-    height: "45%",
-    fontSize: 6,
-    alignSelf: "center",
-    justifyContent: "center",
-    marginBottom: 1,
-    borderRadius: 7,
-    borderColor: "white",
-    backgroundColor: "#E74C3C",
   },
   text: {
     fontSize: 18,

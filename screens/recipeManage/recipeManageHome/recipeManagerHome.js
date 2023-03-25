@@ -7,8 +7,8 @@ import { StylesLocal } from "../../../styles/LocalStyles";
 import Icon from "react-native-vector-icons/Ionicons";
 import { auth, db } from "../../../firebase";
 
-const EventManagerHome = ({ navigation, props }) => {
-  const [events, setEvents] = useState([]);
+const RecipeManagerHome = ({ navigation, props }) => {
+  const [recipe, setRecipe] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -16,22 +16,22 @@ const EventManagerHome = ({ navigation, props }) => {
 
   useEffect(() => {
     if (!mounted) {
-      getEvents();
+      getRecipe();
       setMounted(true);
     }
-  }, [events]);
+  }, [recipe]);
 
-  let getEvents = async () => {
+  let getRecipe = async () => {
     try {
-      const q = query(collection(db, "events"));
+      const q = query(collection(db, "recipe"));
       const querySnapshot = await getDocs(q);
-      let allEvents = [];
+      let allRecipe = [];
       querySnapshot.forEach((doc) => {
-        const eventId = doc.id;
+        const recipeId = doc.id;
         let toDo = doc.data();
-        allEvents.push({ eventId, ...toDo });
+        allRecipe.push({ recipeId, ...toDo });
       });
-      setEvents(allEvents);
+      setRecipe(allRecipe);
     } catch (e) {
       console.log(e);
     }
@@ -62,7 +62,7 @@ const EventManagerHome = ({ navigation, props }) => {
   return (
     <Card style={Styles.cardContainer}>
       <Card.Content style={Styles.cardContentWithoutAction}>
-        <Text style={StylesLocal.cardTitle}>Browse events</Text>
+        <Text style={StylesLocal.cardTitle}>Browse recipe</Text>
         <TextInput
           // label="Search"
           value={searchQuery}
@@ -71,34 +71,36 @@ const EventManagerHome = ({ navigation, props }) => {
           underlineColor="transparent"
           activeUnderlineColor="transparent"
           underlineColorAndroid="transparent"
-          placeholder="Search events..."
+          placeholder="Search recipe..."
         />
 
         <ScrollView style={Styles.staticTextView}>
-          {events &&
-            events
-              .filter((event) =>
-                event.eventName.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .map((event, i) => (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() => navigation.navigate("EventView", event)}
-                >
-                  <Card style={styles.card}>
-                    <Card.Content>
-                      <View style={styles.cardTitleRow}>
-                        <Text style={styles.cardDietName}>{event.eventName}</Text>
-                        <View style={styles.cardAuthorView}>
-                          <Text style={styles.cardDietAuthor}>
-                            {"By " + event.eventUserName}
-                          </Text>
-                        </View>
+          {recipe && 
+            recipe
+            .filter((recipe) =>
+              recipe.recipeName.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .map((recipe, i) => (
+              <TouchableOpacity
+                key={i}
+                onPress={() => navigation.navigate("RecipeView", recipe)}
+              >
+                <Card style={styles.card}>
+                  <Card.Content>
+                    <View style={styles.cardTitleRow}>
+                      <Text style={styles.cardRecipeName}>{recipe.recipeName}</Text>
+                      <View style={styles.cardAuthorView}>
+                        <Text style={styles.cardRecipeAuthor}>
+                          {"By " + recipe.recipeUserName}
+                        </Text>
                       </View>
-                    </Card.Content>
-                  </Card>
-                </TouchableOpacity>
-              ))}
+                    </View>
+                    {/* <Text>{recipe.recipeUser}</Text> */}
+                    <Text>{recipe.recipeDesc}</Text>
+                  </Card.Content>
+                </Card>
+              </TouchableOpacity>
+            ))}
         </ScrollView>
       </Card.Content>
     </Card>
@@ -153,14 +155,14 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "flex-end",
   },
-  cardDietName: {
+  cardRecipeName: {
     color: "black",
     fontSize: 19,
     // textAlign: "center",
     marginBottom: 20,
     left: "5%",
   },
-  cardDietAuthor: {
+  cardRecipeAuthor: {
     ...commonstaticSmallTextViewProps,
     // position: "absolute",
     backgroundColor: "white",
@@ -185,4 +187,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EventManagerHome;
+export default RecipeManagerHome;

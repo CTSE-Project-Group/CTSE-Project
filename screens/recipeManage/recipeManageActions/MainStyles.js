@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 const defaultColor = "white";
 
-export const DietMainStyles = StyleSheet.create({
+export const RecipeMainStyles = StyleSheet.create({
   cardContainer: {
     paddingTop: "10%",
     height: "92%",
@@ -28,12 +28,12 @@ export const DietMainStyles = StyleSheet.create({
     backgroundColor: defaultColor,
     // backgroundColor: "#F90D8A",
   },
-  cardActionsStyle: {
+  cardAction12: {
     //card action style used for single button
     alignItems: "center",
     justifyContent: "center",
     fontSize: 50,
-    height: "20%",
+    height: "10%",
     backgroundColor: defaultColor,
   },
   cardActionsRowStyle: {
@@ -52,22 +52,11 @@ export const DietMainStyles = StyleSheet.create({
   buttonProceed: {
     fontSize: 6,
     width: "100%",
-    height: "45%",
+    height: "80%",
     alignSelf: "center",
     justifyContent: "center",
     marginBottom: 1,
-    backgroundColor: "#E74C3C",
-    borderRadius: 7,
-    borderColor: "white",
-  },
-  buttonProceedEdit: {
-    fontSize: 6,
-    width: "100%",
-    height: "45%",
-    alignSelf: "center",
-    justifyContent: "center",
-    marginBottom: 1,
-    backgroundColor: "#1ABC9C",
+    backgroundColor: "#C39BD3",
     borderRadius: 7,
     borderColor: "white",
   },

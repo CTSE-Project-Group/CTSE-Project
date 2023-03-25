@@ -1,5 +1,5 @@
 import { Button as Btn } from "@rneui/base";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { db, auth } from "../../../firebase";
 import { Styles } from "../../../styles/CardStyles";
@@ -17,36 +17,58 @@ import {
   deleteDoc,
   doc,
   setDoc,
+  getDoc,
   updateDoc,
 } from "firebase/firestore";
 
-const AddRecipeNew = ({ navigation, props }) => {
+const EditRecipeNew = ({ navigation, route }) => {
+  const [recipeID, setRecipeId] = useState("");
+  const [recipeArrLen, setRecipeArrLen] = useState(0);
+  const [recipeArr, setRecipeArr] = useState([{ field1: "", field2: "" }]);
+  const [recipe, setRecipe] = useState();
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [numberOfTextFields, setNumberOfTextFields] = useState(1);
-  const [textFieldsValues, setTextFieldsValues] = useState([
-    { field1: "", field2: "" },
-  ]);
 
-  let addRecipe = () => {
-    const dbRef = collection(db, "recipe");
+  useEffect(() => {
+    getRecipe();
+  }, []);
+
+  const getRecipe = async () => {
+    const docRef = doc(db, "recipe", route.params);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists) {
+      const data = docSnap.data();
+      const id = docSnap.id;
+      setRecipeId(id);
+      setRecipe(data);
+      setName(data.recipeName);
+      setDesc(data.recipeDesc);
+      setPrice(data.recipePrice);
+      setRecipeArrLen(data.recipeIngredients.length);
+      setRecipeArr(data.recipeIngredients);
+    } else {
+      console.log("No such document!");
+    }
+  };
+
+  let updateRecipe = () => {
     const data = {
-      recipeUser: auth.currentUser.uid,
-      recipeUserName: auth.currentUser.displayName,
+      recipeUser: recipe.recipeUser,
+      recipeUserName: recipe.recipeUserName,
       recipeName: name,
       recipeDesc: desc,
       recipePrice: price,
-      recipeIngredients: textFieldsValues,
+      recipeIngredients: recipeArr,
       isShared: false,
     };
 
-    console.log(data);
-
-    addDoc(dbRef, data)
-      .then((docRef) => {
-        console.log("Document has been added successfully");
+    const docRef = doc(db, "recipes", route.params);
+    setDoc(docRef, data)
+      .then(() => {
+        console.log("Doc Updated");
       })
       .catch((error) => {
         console.log(error);
@@ -54,13 +76,59 @@ const AddRecipeNew = ({ navigation, props }) => {
   };
 
   const logger = () => {
-    console.log("click", auth.currentUser.displayName);
+    console.log(recipe);
+  };
+
+  const handleAddTextField = () => {
+    setRecipeArrLen(recipeArrLen + 1);
+    setRecipeArr([...recipeArr, { field1: "", field2: "" }]);
+  };
+
+  const handleDeleteTextField = (index) => {
+    const newValues = [...recipeArr];
+    newValues.splice(index, 1);
+    setRecipeArr(newValues);
+    setRecipeArrLen(recipeArrLen - 1);
+  };
+
+  const handleTextFieldChange = (text, index, field) => {
+    const newValues = [...recipeArr];
+    newValues[index][field] = text;
+    setRecipeArr(newValues);
+  };
+
+  const insertLabel = (labelValue, style) => (
+    <Text style={style}>{labelValue}</Text>
+  );
+
+  hideAlert = () => {
+    setShowAlert(false);
+  };
+
+  openAlert = () => {
+    if (name == "" || desc == "" || price == "") {
+      setShowAlert(true);
+    } else if (!checkAllFieldsNotNull()) {
+      setShowAlert(true);
+    } else {
+      updateRecipe();
+    }
+  };
+
+  const checkAllFieldsNotNull = () => {
+    for (let i = 0; i < recipeArr.length; i++) {
+      const obj = recipeArr[i];
+      if (obj.field1 == "" || obj.field2 == "") {
+        return false;
+      }
+    }
+    return true;
   };
 
   const renderTextFields = (id) => {
     const textFields = [];
 
-    for (let i = 0; i < numberOfTextFields; i++) {
+    for (let i = 0; i < recipeArr.length; i++) {
       textFields.push(
         <View key={i} style={StylesLocal.dynamicTextFieldContainer}>
           <TextInput
@@ -70,18 +138,18 @@ const AddRecipeNew = ({ navigation, props }) => {
             style={StylesLocal.inputFieldDual}
             key={i}
             placeholder={`insert item`}
-            value={textFieldsValues[i].field1}
+            value={recipeArr[i].field1}
             onChangeText={(text) => handleTextFieldChange(text, i, "field1")}
           />
           <TextInput
             keyboardType="numeric"
             underlineColor="transparent"
             activeUnderlineColor="transparent"
-            label={insertLabel("Quantity(grams)", StylesLocal.inputLabel)}
+            label={insertLabel("Quantity", StylesLocal.inputLabel)}
             style={StylesLocal.inputFieldDua2}
             key={i + 1}
             placeholder={`insert qty`}
-            value={textFieldsValues[i].field2}
+            value={recipeArr[i].field2}
             onChangeText={(text) => handleTextFieldChange(text, i, "field2")}
           />
           <TouchableOpacity
@@ -94,6 +162,13 @@ const AddRecipeNew = ({ navigation, props }) => {
       );
     }
     return textFields;
+  };
+
+  const iconSetter = (iconName) => {
+    return (
+      //used to set icons in the tab bar
+      <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
+    );
   };
 
   const renderTextViews = (id) => (
@@ -129,72 +204,19 @@ const AddRecipeNew = ({ navigation, props }) => {
     />
   );
 
-  const handleAddTextField = () => {
-    setNumberOfTextFields(numberOfTextFields + 1);
-    setTextFieldsValues([...textFieldsValues, { field1: "", field2: "" }]);
-  };
-
-  const handleTextFieldChange = (text, index, field) => {
-    const newValues = [...textFieldsValues];
-    newValues[index][field] = text;
-    setTextFieldsValues(newValues);
-  };
-
-  const handleDeleteTextField = (index) => {
-    const newValues = [...textFieldsValues];
-    newValues.splice(index, 1);
-    setTextFieldsValues(newValues);
-    setNumberOfTextFields(numberOfTextFields - 1);
-  };
-
-  const insertLabel = (labelValue, style) => (
-    <Text style={style}>{labelValue}</Text>
-  );
-
-  const iconSetter = (iconName) => {
-    return (
-      //used to set icons in the tab bar
-      <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
-    );
-  };
-
-  openAlert = () => {
-    if (name == "" || desc == "" || instruct == "") {
-      setShowAlert(true);
-    } else if (!checkAllFieldsNotNull()) {
-      setShowAlert(true);
-    } else {
-      addDiet();
-    }
-  };
-
-  hideAlert = () => {
-    setShowAlert(false);
-  };
-
-  const checkAllFieldsNotNull = () => {
-    for (let i = 0; i < textFieldsValues.length; i++) {
-      const obj = textFieldsValues[i];
-      if (obj.field1 == "" || obj.field2 == "") {
-        return false;
-      }
-    }
-    return true;
-  };
-
   return (
     <Card style={Styles.cardContainer}>
       {/* <Card.Title style={Styles.cardTitleStyle}>EEEE</Card.Title> */}
       <Card.Content style={Styles.cardContent}>
-        <Text style={StylesLocal.cardTitle}>Add Recipe Details</Text>
+        <Text style={StylesLocal.cardTitle}>Edit recipe plan</Text>
         <ScrollView style={Styles.scrollViewBasicStyle}>
           <View>
             <View style={StylesLocal.staticTextView}>
-              <Text style={StylesLocal.staticTextViewTitle}>Recipe info</Text>
+              <Text style={StylesLocal.staticTextViewTitle}>recipe info</Text>
               <TextInput
                 underlineColor="transparent"
                 activeUnderlineColor="transparent"
-                label={insertLabel("Recipe name", StylesLocal.inputLabel)}
+                label={insertLabel("recipe name", StylesLocal.inputLabel)}
                 placeholder="insert recipe name"
                 value={name}
                 onChangeText={setName}
@@ -209,36 +231,38 @@ const AddRecipeNew = ({ navigation, props }) => {
                 value={desc}
                 onChangeText={setDesc}
                 style={StylesLocal.inputField}
-                maxLength={50}
+                maxLength={100}
                 multiline={true}
               />
 
               <TextInput
                 underlineColor="transparent"
                 activeUnderlineColor="transparent"
-                label={insertLabel("Price", StylesLocal.inputLabel)}
-                placeholder="insert price"
+                label={insertLabel("{Price", StylesLocal.inputLabel)}
+                placeholder="insert Price"
                 onChangeText={setPrice}
                 value={price}
                 style={StylesLocal.inputField}
-                maxLength={50}
+                maxLength={100}
+                multiline={true}
               />
             </View>
             {renderTextViews("Ingredients")}
           </View>
         </ScrollView>
+        {renderAlert("Please fill all fields")}
       </Card.Content>
       <Card.Actions style={Styles.cardActionsStyle}>
         <Button
           uppercase={false}
-          style={Styles.buttonProceed}
-          onPress={addRecipe}
+          style={Styles.buttonProceedConfirm}
+          onPress={() => openAlert()}
         >
-          <Text style={Styles.text}> Proceed</Text>
+          <Text style={Styles.text}> Confirm Edit</Text>
         </Button>
       </Card.Actions>
     </Card>
   );
 };
 
-export default AddRecipeNew;
+export default EditRecipeNew;

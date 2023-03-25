@@ -1,5 +1,5 @@
 import { Button as Btn } from "@rneui/base";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { db, auth } from "../../../firebase";
 import { Styles } from "../../../styles/CardStyles";
@@ -17,42 +17,50 @@ import {
   deleteDoc,
   doc,
   setDoc,
+  getDoc,
   updateDoc,
-  arrayUnion,
 } from "firebase/firestore";
 
-const AddEventNew = ({ navigation, props }) => {
+const EditEventNew = ({ navigation, route }) => {
+  const [eventID, setEventId] = useState("");
+  const [event, setEvent] = useState();
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [showAlert, setShowAlert] = useState(false);
 
-  let updateUser = async (eventId) => {
-    const docRef = doc(db, "users", auth.currentUser.uid);
-    try {
-      await updateDoc(docRef, {
-        myArray: arrayUnion(eventId),
-      }).then(() => {
-        console.log("updated with", eventId);
-      });
-    } catch (e) {
-      console.log(e);
+  useEffect(() => {
+    getEvent();
+  }, []);
+
+  const getEvent = async () => {
+    const docRef = doc(db, "events", route.params);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists) {
+      const data = docSnap.data();
+      const id = docSnap.id;
+      setEventId(id);
+      setEvent(data);
+      setName(data.eventName);
+      setDesc(data.eventDesc);
+    } else {
+      console.log("No such document!");
     }
   };
 
-  let addEvent = () => {
-    const dbRef = collection(db, "events");
+  let updateEvent = () => {
     const data = {
-      eventUser: auth.currentUser.uid,
-      eventUserName: auth.currentUser.displayName,
+      eventUser: event.eventUser,
+      eventUserName: event.eventUserName,
       eventName: name,
       eventDesc: desc,
       isShared: false,
     };
 
-    addDoc(dbRef, data)
-      .then((docRef) => {
-        updateUser(docRef.id);
-        console.log("Document has been added successfully");
+    const docRef = doc(db, "events", route.params);
+    setDoc(docRef, data)
+      .then(() => {
+        console.log("Doc Updated");
       })
       .catch((error) => {
         console.log(error);
@@ -60,7 +68,30 @@ const AddEventNew = ({ navigation, props }) => {
   };
 
   const logger = () => {
-    console.log("click", auth.currentUser.displayName);
+    console.log(event);
+  };
+
+  const insertLabel = (labelValue, style) => (
+    <Text style={style}>{labelValue}</Text>
+  );
+
+  hideAlert = () => {
+    setShowAlert(false);
+  };
+
+  openAlert = () => {
+    if (name == "" || desc == "") {
+      setShowAlert(true);
+    } else {
+      updateEvent();
+    }
+  };
+
+  const iconSetter = (iconName) => {
+    return (
+      //used to set icons in the tab bar
+      <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
+    );
   };
 
   const renderAlert = (msg) => (
@@ -81,34 +112,11 @@ const AddEventNew = ({ navigation, props }) => {
     />
   );
 
-  const insertLabel = (labelValue, style) => (
-    <Text style={style}>{labelValue}</Text>
-  );
-
-  const iconSetter = (iconName) => {
-    return (
-      //used to set icons in the tab bar
-      <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
-    );
-  };
-
-  openAlert = () => {
-    if (name == "" || desc == "") {
-      setShowAlert(true);
-    } else {
-      addEvent();
-    }
-  };
-
-  hideAlert = () => {
-    setShowAlert(false);
-  };
-
   return (
     <Card style={Styles.cardContainer}>
       {/* <Card.Title style={Styles.cardTitleStyle}>EEEE</Card.Title> */}
       <Card.Content style={Styles.cardContent}>
-        <Text style={StylesLocal.cardTitle}>Create event</Text>
+        <Text style={StylesLocal.cardTitle}>Edit event</Text>
         <ScrollView style={Styles.scrollViewBasicStyle}>
           <View>
             <View style={StylesLocal.staticTextView}>
@@ -134,7 +142,6 @@ const AddEventNew = ({ navigation, props }) => {
                 maxLength={100}
                 multiline={true}
               />
-
             </View>
           </View>
         </ScrollView>
@@ -143,14 +150,14 @@ const AddEventNew = ({ navigation, props }) => {
       <Card.Actions style={Styles.cardActionsStyle}>
         <Button
           uppercase={false}
-          style={Styles.buttonProceed}
+          style={Styles.buttonProceedConfirm}
           onPress={() => openAlert()}
         >
-          <Text style={Styles.text}> Proceed</Text>
+          <Text style={Styles.text}> Confirm Edit</Text>
         </Button>
       </Card.Actions>
     </Card>
   );
 };
 
-export default AddEventNew;
+export default EditEventNew;

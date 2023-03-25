@@ -8,6 +8,8 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { auth, db } from "../../../firebase";
 import { DietMainStyles } from "../mealPlannerHome/MainStyles";
 
+
+
 const MyDiets = ({ navigation, props }) => {
   const [dietIdArr, setDietIdArr] = useState([]);
   const [userDietArr, setUserDietArr] = useState([]);
