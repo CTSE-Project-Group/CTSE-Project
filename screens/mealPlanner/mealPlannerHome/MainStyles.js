@@ -65,4 +65,11 @@ export const DietMainStyles = StyleSheet.create({
     letterSpacing: 0.25,
     color: "white",
   },
+  nullText: {
+    fontSize: 18,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "white",
+  },
 });

@@ -39,6 +39,8 @@ const ViewDiet = ({ navigation, route }) => {
     try {
       await updateDoc(docRef, {
         myArray: arrayRemove(diet.dietId),
+      }).then(() => {
+        navigation.navigate("DietHome");
       });
     } catch (e) {
       console.log(e);
