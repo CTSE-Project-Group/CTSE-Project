@@ -23,12 +23,9 @@ import {
 
 const EditEventNew = ({ navigation, route }) => {
   const [eventID, setEventId] = useState("");
-  const [eventArrLen, setEventArrLen] = useState(0);
-  const [eventArr, setEventArr] = useState([{ field1: "", field2: "" }]);
   const [event, setEvent] = useState();
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
-  const [instruct, setInstruct] = useState("");
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
@@ -46,9 +43,6 @@ const EditEventNew = ({ navigation, route }) => {
       setEvent(data);
       setName(data.eventName);
       setDesc(data.eventDesc);
-      setInstruct(data.eventIns);
-      setEventArrLen(data.eventFoods.length);
-      setEventArr(data.eventFoods);
     } else {
       console.log("No such document!");
     }
@@ -60,8 +54,6 @@ const EditEventNew = ({ navigation, route }) => {
       eventUserName: event.eventUserName,
       eventName: name,
       eventDesc: desc,
-      eventIns: instruct,
-      eventFoods: eventArr,
       isShared: false,
     };
 
@@ -79,24 +71,6 @@ const EditEventNew = ({ navigation, route }) => {
     console.log(event);
   };
 
-  const handleAddTextField = () => {
-    setEventArrLen(eventArrLen + 1);
-    setEventArr([...eventArr, { field1: "", field2: "" }]);
-  };
-
-  const handleDeleteTextField = (index) => {
-    const newValues = [...eventArr];
-    newValues.splice(index, 1);
-    setEventArr(newValues);
-    setEventArrLen(eventArrLen - 1);
-  };
-
-  const handleTextFieldChange = (text, index, field) => {
-    const newValues = [...eventArr];
-    newValues[index][field] = text;
-    setEventArr(newValues);
-  };
-
   const insertLabel = (labelValue, style) => (
     <Text style={style}>{labelValue}</Text>
   );
@@ -106,62 +80,11 @@ const EditEventNew = ({ navigation, route }) => {
   };
 
   openAlert = () => {
-    if (name == "" || desc == "" || instruct == "") {
-      setShowAlert(true);
-    } else if (!checkAllFieldsNotNull()) {
+    if (name == "" || desc == "") {
       setShowAlert(true);
     } else {
       updateEvent();
     }
-  };
-
-  const checkAllFieldsNotNull = () => {
-    for (let i = 0; i < eventArr.length; i++) {
-      const obj = eventArr[i];
-      if (obj.field1 == "" || obj.field2 == "") {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  const renderTextFields = (id) => {
-    const textFields = [];
-
-    for (let i = 0; i < eventArr.length; i++) {
-      textFields.push(
-        <View key={i} style={StylesLocal.dynamicTextFieldContainer}>
-          <TextInput
-            underlineColor="transparent"
-            activeUnderlineColor="transparent"
-            label={insertLabel("Food", StylesLocal.inputLabel)}
-            style={StylesLocal.inputFieldDual}
-            key={i}
-            placeholder={`insert item`}
-            value={eventArr[i].field1}
-            onChangeText={(text) => handleTextFieldChange(text, i, "field1")}
-          />
-          <TextInput
-            keyboardType="numeric"
-            underlineColor="transparent"
-            activeUnderlineColor="transparent"
-            label={insertLabel("Quantity", StylesLocal.inputLabel)}
-            style={StylesLocal.inputFieldDua2}
-            key={i + 1}
-            placeholder={`insert qty`}
-            value={eventArr[i].field2}
-            onChangeText={(text) => handleTextFieldChange(text, i, "field2")}
-          />
-          <TouchableOpacity
-            onPress={handleDeleteTextField}
-            style={StylesLocal.deleteIconView}
-          >
-            {iconSetter("md-close")}
-          </TouchableOpacity>
-        </View>
-      );
-    }
-    return textFields;
   };
 
   const iconSetter = (iconName) => {
@@ -170,21 +93,6 @@ const EditEventNew = ({ navigation, route }) => {
       <Icon color={"#138D75"} type="MaterialIcons" name={iconName} size={30} />
     );
   };
-
-  const renderTextViews = (id) => (
-    <View id={id} style={StylesLocal.dynamicTextView}>
-      <View style={StylesLocal.dynamicTextViewHeader}>
-        <Text style={StylesLocal.dynamicTextViewTitle}>{id}</Text>
-        <TouchableOpacity
-          style={StylesLocal.addIconView}
-          onPress={handleAddTextField}
-        >
-          {iconSetter("add-circle")}
-        </TouchableOpacity>
-      </View>
-      {renderTextFields(id)}
-    </View>
-  );
 
   const renderAlert = (msg) => (
     <AwesomeAlert
@@ -234,20 +142,7 @@ const EditEventNew = ({ navigation, route }) => {
                 maxLength={100}
                 multiline={true}
               />
-
-              <TextInput
-                underlineColor="transparent"
-                activeUnderlineColor="transparent"
-                label={insertLabel("Instructions", StylesLocal.inputLabel)}
-                placeholder="insert instructions"
-                onChangeText={setInstruct}
-                value={instruct}
-                style={StylesLocal.inputField}
-                maxLength={100}
-                multiline={true}
-              />
             </View>
-            {renderTextViews("Foods")}
           </View>
         </ScrollView>
         {renderAlert("Please fill all fields")}

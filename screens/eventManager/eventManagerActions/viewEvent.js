@@ -21,7 +21,6 @@ import { DietMainStyles } from "./MainStyles";
 
 const ViewEvent = ({ navigation, route }) => {
   const [desc, setDesc] = useState("");
-  const [instruct, setInstruct] = useState("");
   const [validUser, setValidUser] = useState("");
   const [isEditable, setIsEditable] = useState(false);
   const [isEditClicked, setIsEditClicked] = useState(false);
@@ -31,7 +30,6 @@ const ViewEvent = ({ navigation, route }) => {
   useEffect(() => {
     setValidUser(route.params.eventUser == auth.currentUser.uid);
     setDesc(event.eventDesc);
-    setInstruct(event.eventIns);
   }, []);
 
   let updateUser = async () => {
@@ -107,46 +105,6 @@ const ViewEvent = ({ navigation, route }) => {
                 maxLength={50}
                 editable={isEditable}
               />
-              <TextInput
-                underlineColor="transparent"
-                activeUnderlineColor="transparent"
-                label={insertLabel("Instructions", DietStylesLocal.inputLabel)}
-                placeholder="insert instructions"
-                value={event.eventIns}
-                style={DietStylesLocal.inputField}
-                multiline={true}
-                editable={isEditable}
-              />
-            </View>
-            <View style={DietStylesLocal.dynamicTextFieldOuterContainer}>
-              {event.eventFoods &&
-                event.eventFoods.map((food, i) => (
-                  <View
-                    key={i}
-                    style={DietStylesLocal.dynamicTextFieldContainer}
-                  >
-                    <TextInput
-                      underlineColor="transparent"
-                      activeUnderlineColor="transparent"
-                      label={insertLabel("Food", DietStylesLocal.inputLabel)}
-                      style={DietStylesLocal.inputFieldDual}
-                      value={food.field1}
-                      editable={isEditable}
-                    />
-                    <TextInput
-                      keyboardType="numeric"
-                      underlineColor="transparent"
-                      activeUnderlineColor="transparent"
-                      label={insertLabel(
-                        "Quantity",
-                        DietStylesLocal.inputLabel
-                      )}
-                      style={DietStylesLocal.inputFieldDua2}
-                      value={food.field2}
-                      editable={isEditable}
-                    />
-                  </View>
-                ))}
             </View>
           </View>
         </ScrollView>
