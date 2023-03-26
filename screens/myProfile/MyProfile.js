@@ -79,19 +79,21 @@ export default function MyProfile({ navigation, props }) {
       });
   };
 
+  const btnStyle = {width:100}
+
   return (
     <View style={DefaultScreenStyles.container}>
-      <Button onPress={() => navigation.navigate("RecipeManageStack")}>
+      <Button style={btnStyle} onPress={() => navigation.navigate("RecipeManageStack")}>
         My Recipies
         </Button>
-      <Button onPress={() => navigation.navigate("MealPLannerStack")}>
+      <Button style={btnStyle} onPress={() => navigation.navigate("MealPLannerStack")}>
         My Diets
       </Button>
-      <Button>My Shopping lists</Button>
-      <Button onPress={() => navigation.navigate("EventManagerStack")}>
+      <Button style={btnStyle}>My Shopping lists</Button>
+      <Button style={btnStyle} onPress={() => navigation.navigate("EventManagerStack")}>
         Events
       </Button>
-      <Button color="#f7b267" onPress={deleteUser}>
+      <Button style={btnStyle} color="#f7b267" onPress={deleteUser}>
         Logout
       </Button>
       {/* link relevant stack screen to buttons */}
