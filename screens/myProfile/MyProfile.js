@@ -1,6 +1,6 @@
-import { Button } from "@rneui/base";
+import { Button, Card, TextInput, Text } from "react-native-paper";
 import React, { useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { auth, db } from "../../firebase";
 import {
   collection,
@@ -79,29 +79,52 @@ function MyProfile({ navigation, props }) {
       });
   };
 
+  const buttonStyleSetter = (color, ...other) => {
+    console.log(other[2]);
+    return {
+      fontSize: 6,
+      width: "100%",
+      height: other[0] ? other[2] : "10%",
+      alignSelf: "center",
+      justifyContent: "center",
+      marginBottom: 3,
+      backgroundColor: color,
+      borderRadius: 7,
+      borderColor: "white",
+      top: other[1],
+    };
+  };
+
   return (
     <View style={DefaultScreenStyles.container}>
-      <Button onPress={() => navigation.navigate("RecipeManageStack")}>
-        My Recipies
+      <Button
+        style={buttonStyleSetter("#AF7AC5")}
+        onPress={() => navigation.navigate("RecipeManageStack")}
+      >
+        <Text style={Styles.text}>My Recipies</Text>
       </Button>
-      <Button onPress={() => navigation.navigate("MealPLannerStack")}>
-        My Diets
+      <Button
+        style={buttonStyleSetter("#F5B041")}
+        onPress={() => navigation.navigate("MealPLannerStack")}
+      >
+        <Text style={Styles.text}> My Diets</Text>
       </Button>
-      <Button>My Shopping lists</Button>
-      <Button onPress={() => navigation.navigate("EventManagerStack")}>
-        Events
+      <Button style={buttonStyleSetter("#48C9B0")}>
+        <Text style={Styles.text}>My Shopping</Text>
       </Button>
-      <Button color="#f7b267" onPress={deleteUser}>
-        Logout
+      <Button
+        style={buttonStyleSetter("#5499C7")}
+        onPress={() => navigation.navigate("EventManagerStack")}
+      >
+        <Text style={Styles.text}>My Events</Text>
+      </Button>
+      <Button
+        style={buttonStyleSetter("#C0392B", true, 150, "7%")}
+        onPress={deleteUser}
+      >
+        <Text style={Styles.text}>Logout</Text>
       </Button>
       {/* link relevant stack screen to buttons */}
-      <Button
-        uppercase={false}
-        style={Styles.buttonProceed}
-        onPress={updateUser}
-      >
-        <Text style={Styles.text}>Remove from My diets</Text>
-      </Button>
     </View>
   );
 }
@@ -116,7 +139,7 @@ const Styles = StyleSheet.create({
   buttonProceed: {
     fontSize: 6,
     width: "100%",
-    height: "45%",
+    height: "10%",
     alignSelf: "center",
     justifyContent: "center",
     marginBottom: 1,
