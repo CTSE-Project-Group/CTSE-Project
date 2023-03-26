@@ -8,8 +8,6 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { auth, db } from "../../../firebase";
 import { RecipeMainStyles } from "../recipeManageHome/MainStyles";
 
-
-
 const MyRecipe = ({ navigation, props }) => {
   const [recipeIdArr, setRecipeIdArr] = useState([]);
   const [userRecipeArr, setUserRecipeArr] = useState([]);
@@ -100,7 +98,9 @@ const MyRecipe = ({ navigation, props }) => {
           {recipe &&
             recipe
               .filter((recipe) =>
-                recipe.recipeName.toLowerCase().includes(searchQuery.toLowerCase())
+                recipe.recipeName
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase())
               )
               .map((recipe, i) => (
                 <TouchableOpacity
@@ -110,10 +110,15 @@ const MyRecipe = ({ navigation, props }) => {
                   <Card style={styles.card}>
                     <Card.Content>
                       <View style={styles.cardTitleRow}>
-                        <Text style={styles.cardRecipeName}>{recipe.recipeName}</Text>
+                        <Text style={styles.cardRecipeName}>
+                          {recipe.recipeName}
+                        </Text>
                         <View style={styles.cardAuthorView}>
                           <Text style={styles.cardRecipeAuthor}>
-                            {getRecipeUser(recipe.recipeUser, recipe.recipeUserName)}
+                            {getRecipeUser(
+                              recipe.recipeUser,
+                              recipe.recipeUserName
+                            )}
                           </Text>
                         </View>
                       </View>

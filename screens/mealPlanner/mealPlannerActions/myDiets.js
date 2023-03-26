@@ -67,6 +67,15 @@ const MyDiets = ({ navigation, props }) => {
     return dietIdArr.filter((dietId) => userDietArr.includes(dietId));
   };
 
+  const checkNullArray = () => {
+    const val = filterDietIds(dietIdArr, userDietArr).length;
+    if (val) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const iconSetter = (iconName) => {
     return (
       //used to set icons in the tab bar
@@ -96,6 +105,10 @@ const MyDiets = ({ navigation, props }) => {
           underlineColorAndroid="transparent"
           placeholder="Search diets..."
         />
+        {!checkNullArray() && (
+          <Text style={Styles.nullText}>Nothing here to show !</Text>
+        )}
+
         <ScrollView style={Styles.staticTextView}>
           {diets &&
             diets
@@ -131,7 +144,7 @@ const MyDiets = ({ navigation, props }) => {
           uppercase={false}
           style={DietMainStyles.buttonProceed}
           onPress={() => navigation.navigate("AddDiet", "Create")}
-          // onPress={logger}
+          // onPress={checkNullArray}
         >
           <Text style={DietMainStyles.text}>Create new Diet</Text>
         </Button>
