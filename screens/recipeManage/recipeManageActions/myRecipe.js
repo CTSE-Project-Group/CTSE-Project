@@ -97,7 +97,6 @@ const MyRecipe = ({ navigation, props }) => {
         <ScrollView style={Styles.staticTextView}>
           {recipe &&
             recipe
-              .filter((recipe) => userRecipeArr.includes(recipe.recipeId))
               .filter((recipe) =>
                 recipe.recipeName
                   .toLowerCase()
